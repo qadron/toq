@@ -60,9 +60,7 @@ Check out the files in the <i>examples/</i> directory, they go through everythin
 
 ### Gem
 
-To install the Arachni-RPC gem:
-
-    gem install arachni-rpc
+The Gem hasn't been pushed yet, the system is still under development.
 
 ### Source
 
