@@ -43,7 +43,7 @@ server = Arachni::RPC::Server.new(
 
 #
 # This is a way for you to identify methods that pass their result to a block
-# instead of simply returning itwhich is the Most usual operation of async methods.
+# instead of simply returning them (which is the most usual operation of async methods.
 #
 # So no need to change your coding convetions to fit the RPC stuff,
 # you can just decide dynamically based on a plethora of data which Ruby provides
