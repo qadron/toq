@@ -33,7 +33,7 @@
 ## Synopsis
 
 Arachni-RPC is a simple and lightweight EventMachine based RPC client and server implementation. <br/>
-It provides the basis for <a href="http://arachni.segfault.gr">Arachni</a>'s distributed infrastructure.
+It is under development and will ultimately provide the basis for <a href="http://arachni.segfault.gr">Arachni</a>'s Grid infrastructure.
 
 ## Features
 
