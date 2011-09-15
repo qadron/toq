@@ -83,19 +83,20 @@ class Server
             # the method call may block a little so tell EventMachine to
             # stick it in its own thread.
             ::EM.defer( proc {
-                begin
-                    peer = peer_ip_addr
+                res = {}
+                peer = peer_ip_addr
 
+                begin
                     # token-based authentication
                     authenticate!( peer, req )
 
                     # grab the result of the method call
-                    obj = @server.call( peer, req )
+                    res = @server.call( peer, req )
 
                 # handle exceptions and convert them to a simple hash,
                 # ready to be passed to the client.
                 rescue Exception => e
-                    obj = {
+                    res[:obj] = {
                         'exception' => e.to_s,
                         'backtrace' => e.backtrace,
                         'type'      => e.class.name.split( ':' )[-1]
@@ -105,11 +106,17 @@ class Server
                     @server.logger.error( 'Exception' ){ msg + " [on behalf of #{peer}]" }
                 end
 
-                obj
-            }, proc { |obj|
+                res
+            }, proc { |res|
+
+                #
                 # pass the result of the RPC call back to the client
-                # along with the callback ID
-                send_object( { 'obj' => obj, 'cb_id' => req['cb_id'] } )
+                # along with the callback ID but *only* if it wan't async
+                # because server.call() will have already taken care of it
+                #
+                if !res[:async]
+                    send_object( { 'obj' => res[:obj], 'cb_id' => req['cb_id'] } )
+                end
             })
         end
 
@@ -233,14 +240,19 @@ class Server
             raise( InvalidMethod.new( msg ) )
         end
 
-        if !is_async?( obj_name, meth_name )
-            @objects[obj_name].send( meth_name.to_sym, *args )
+        # the proxy needs to know wether this is an async call because if it
+        # is we'll have already send the response.
+        res = {}
+        if !( res[:async] = is_async?( obj_name, meth_name ) )
+            res[:obj] = @objects[obj_name].send( meth_name.to_sym, *args )
         else
             @objects[obj_name].send( meth_name.to_sym, *args ){
                 |obj|
                 @proxy.send_object( { 'obj' => obj, 'cb_id' => req['cb_id'] } )
             }
         end
+
+        return res
     end
 
     def alive?
