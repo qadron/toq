@@ -39,7 +39,7 @@ It is under development and will ultimately provide the basis for <a href="http:
 
 It's capable of:
 
- - performing and handling a few thousands requests per second (depending on call size, network conditions and the like)
+ - performing and handling a few thousand requests per second (depending on call size, network conditions and the like)
  - TLS encrytion
  - asynchronous and synchronous requests
  - handling remote asynchronous calls that require a block
