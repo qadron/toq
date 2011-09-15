@@ -54,7 +54,7 @@ It's capable of:
 
 ## Usage
 
-Check out the files in the <i>examples/</i> directory, it goes through everything in great detail.
+Check out the files in the <i>examples/</i> directory, they go through everything in great detail.
 
 ## Installation
 
