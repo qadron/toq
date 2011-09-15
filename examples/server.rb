@@ -11,11 +11,18 @@
 # require 'arachni/rpc'
 require File.join( File.expand_path( File.dirname( __FILE__ ) ), '../lib/arachni/', 'rpc' )
 
-class Bench
-
+class Parent
     def foo( arg )
         return arg
     end
+end
+
+class Bench < Parent
+
+    # in order to make inherited methods accessible you've got to explicitly
+    # make them public
+    private :foo
+    public :foo
 
     #
     # Used to simulate an async call that would require a block.
