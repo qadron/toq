@@ -9,16 +9,8 @@
         <td><a href="http://github.com/Arachni/arachni-rpc">http://github.com/Arachni/arachni-rpc</a></td>
      <tr/>
     <tr>
-        <th>Documentation</th>
-        <td><a href="http://github.com/Arachni/arachni-rpc/wiki">http://github.com/Arachni/arachni-rpc/wiki</a></td>
-    </tr>
-    <tr>
         <th>Code Documentation</th>
-        <td><a href="http://arachni.github.com/arachni-rpc">http://arachni.github.com/arachni-rpc</a></td>
-    </tr>
-    <tr>
-        <th>Google Group</th>
-        <td><a href="http://groups.google.com/group/arachni">http://groups.google.com/group/arachni</a></td>
+        <td><a href="http://rubydoc.info/github/Arachni/arachni-rpc/master/file/README.md">http://rubydoc.info/github/Arachni/arachni-rpc/master/file/README.md</a></td>
     </tr>
     <tr>
        <th>Author</th>
