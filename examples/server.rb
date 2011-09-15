@@ -25,10 +25,14 @@ class Bench < Parent
     public :foo
 
     #
-    # Used to simulate an async call that would require a block.
+    # Uses EventMachine to call the block asynchronously
     #
     def async_foo( arg, &block )
-        block.call( arg ) if block_given?
+        ::EM.schedule {
+            ::EM.defer {
+                block.call( arg ) if block_given?
+            }
+        }
     end
 
 end
