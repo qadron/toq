@@ -9,6 +9,7 @@
 =end
 
 require 'eventmachine'
+require 'fiber'
 
 module Arachni
 module RPC
@@ -22,6 +23,18 @@ module RPC
 # @version: 0.1
 #
 module EM
+
+module Synchrony
+
+    def run( &block )
+        @@root_f = Fiber.new {
+            block.call
+        }.resume
+    end
+
+    extend self
+
+end
 
     #
     # Inits method variables for the Reactor tasks and its Mutex.
@@ -37,21 +50,28 @@ module EM
     # @param    [Proc]    &block    block to be included in the Reactor loop
     #
     def add_to_reactor( &block )
+
         self.init
 
-        @@reactor_tasks_mutex.lock
-        @@reactor_tasks << block
+        # if we're already in the Reactor thread just run the block straight up.
+        if ::EM::reactor_thread?
+            block.call
+        else
+            @@reactor_tasks_mutex.lock
+            @@reactor_tasks << block
 
-        ensure_em_running!
-    ensure
-        @@reactor_tasks_mutex.unlock
+            ensure_em_running!
+            @@reactor_tasks_mutex.unlock
+        end
+
     end
 
     #
     # Blocks until the Reactor stops running
     #
     def block!
-        ::EM.reactor_thread.join
+        # beware of deadlocks, we can't join our own thread
+        ::EM.reactor_thread.join if !::EM::reactor_thread?
     end
 
     #

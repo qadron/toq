@@ -9,6 +9,7 @@
 =end
 
 require File.join( File.expand_path( File.dirname( __FILE__ ) ), '../', 'rpc' )
+require 'ap'
 
 module Arachni
 module RPC
@@ -102,6 +103,8 @@ class Client
 
         def initialize( server )
             @server = server
+
+            @do_not_defer = Set.new
         end
 
         def post_init
@@ -129,10 +132,15 @@ class Client
             end
 
             if cb = get_callback( res )
-                # the callback might block a bit so tell EM to put it in a thread
-                ::EM.defer {
+
+                if defer?( res['cb_id'] )
+                    # the callback might block a bit so tell EM to put it in a thread
+                    ::EM.defer {
+                        cb.call( res['obj'] )
+                    }
+                else
                     cb.call( res['obj'] )
-                }
+                end
             end
         end
 
@@ -156,27 +164,36 @@ class Client
         #        'call'  => msg, # RPC message in the form of 'handler.method'
         #        'args'  => args, # optional array of arguments for the remote method
         #        'token' => token, # optional authentication token,
-        #        'cb_id' => callback_id # unique identifier for the callback
+        #        'cb_id' => callback_id # unique identifier for the callback,
+        #        'cb'    => callback to be invoked on the response
         #    }
         #
         #
         # @param    [Hash]      req     request hash
-        # @param    [Proc]      &block  callback to be invoked on the response
         #
-        def set_callback_and_send( req, &block )
-            send_object( req.merge( 'cb_id' => set_callback( req, &block ) ) )
+        def set_callback_and_send( req )
+            cb = req.delete( 'cb' )
+
+            do_not_defer = req.delete( 'do_not_defer' ) ? true : false
+            send_object( req.merge( 'cb_id' => set_callback( req, cb, do_not_defer ) ) )
         end
 
-        def set_callback( obj, &block )
+        def set_callback( obj, cb, do_not_defer )
             @callbacks_mutex.lock
 
-            cb_id = obj.__id__.to_s + ':' + block.__id__.to_s
+            cb_id = obj.__id__.to_s + ':' + cb.__id__.to_s
             @callbacks[cb_id] ||= {}
-            @callbacks[cb_id] = block
+            @callbacks[cb_id] = cb
+
+            @do_not_defer << cb_id if do_not_defer
 
             return cb_id
         ensure
             @callbacks_mutex.unlock
+        end
+
+        def defer?( cb_id )
+            !@do_not_defer.include?( cb_id )
         end
 
         def get_callback( obj )
@@ -196,6 +213,7 @@ class Client
     end
 
     attr_reader :opts
+    attr_reader :do_not_defer
 
     #
     # Starts EventMachine and connects to the remote server.
@@ -229,7 +247,9 @@ class Client
             @host, @port = @opts[:host], @opts[:port]
             @k = "#{@host}:#{@port}"
 
-            Arachni::RPC::EM.add_to_reactor {
+            @do_not_defer = Set.new
+
+            ::Arachni::RPC::EM.add_to_reactor{
                 @@cache[@k] = ::EM.connect( @host, @port, Handler, self )
             }
         rescue EventMachine::ConnectionError => e
@@ -263,15 +283,22 @@ class Client
     # @param    [Proc]      &block
     #
     def call( msg, *args, &block )
+
+        opts = {
+            'call' => msg,
+            'args' => args,
+            'cb'   => block
+        }
+
         if block_given?
-            call_async( msg, *args, &block )
+            call_async( opts )
         else
-            return call_sync( msg, *args )
+            return call_sync( opts )
         end
     end
 
     private
-    def call_async( msg, *args, &block )
+    def call_async( opts, &block )
         conn = @@cache[@k]
 
         if !conn
@@ -279,32 +306,51 @@ class Client
                 " no connection has been established for '#{@k}'." )
         end
 
+        opts['cb'] = block if block_given?
+
         ::EM.defer {
-            obj = {
-                'call'  => msg,
-                'args'  => args,
-                'token' => @token
-            }
-            conn.set_callback_and_send( obj, &block )
+            opts['token'] = @token
+            conn.set_callback_and_send( opts )
         }
     end
 
-    def call_sync( msg, *args )
-        raise "Cannot freeze main thread, synchronous call cannot be made in
-            eventmachine thread !!!" if ::EM::reactor_thread?
+    def call_sync( opts )
 
-        t   = Thread.current
         ret = nil
+        # if we're in the Reactor thread use s Fiber and if we're not
+        # use a Thread
+        if !::EM::reactor_thread?
+            t   = Thread.current
+            call_async( opts ) {
+                |obj|
+                t.wakeup
+                ret = obj
+            }
+            sleep
+        else
+            # Fibers do not work across threads so don't defer the callback
+            # once the Handler gets to it
+            opts['do_not_defer'] = true
 
-        call( msg, *args ) {
-            |obj|
-            t.wakeup
-            ret = obj
-        }
-        sleep
+            f = Fiber.current
+            call_async( opts ) {
+                |obj|
+                f.resume( obj )
+            }
+
+            begin
+                ret = Fiber.yield
+            rescue FiberError => e
+                msg = e.to_s + "\n"
+                msg += '(Consider wrapping your sync code in a' +
+                    ' "::Arachni::RPC::EM::Synchrony.run" ' +
+                    'block when your app is running inside the Reactor\'s thread)'
+
+                raise( msg )
+            end
+        end
 
         raise ret if ret.is_a?( Exception )
-
         return ret
     end
 
