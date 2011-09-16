@@ -297,7 +297,7 @@ class Client
     def call_async( opts, &block )
         if !@conn
             raise ConnectionError.new( "Can't perform call," +
-                " no connection has been established for '#{@k}'." )
+                " no connection has been established for '#{@host}:#{@port}'." )
         end
 
         opts['cb'] = block if block_given?
