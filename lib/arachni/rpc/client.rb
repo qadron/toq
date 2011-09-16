@@ -9,7 +9,6 @@
 =end
 
 require File.join( File.expand_path( File.dirname( __FILE__ ) ), '../', 'rpc' )
-require 'ap'
 
 module Arachni
 module RPC
