@@ -295,7 +295,7 @@ class Client
 
     private
     def call_async( opts, &block )
-        if !@conn
+        if !( @conn ||= ::EM.connect( @host, @port, Handler, self ) )
             raise ConnectionError.new( "Can't perform call," +
                 " no connection has been established for '#{@host}:#{@port}'." )
         end
