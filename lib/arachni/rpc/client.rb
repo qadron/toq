@@ -238,18 +238,15 @@ class Client
     def initialize( opts )
 
         begin
-            @@cache ||= {}
-
             @opts  = opts
             @token = @opts[:token]
 
             @host, @port = @opts[:host], @opts[:port]
-            @k = "#{@host}:#{@port}"
-
             @do_not_defer = Set.new
 
+            @conn = nil
             ::Arachni::RPC::EM.add_to_reactor{
-                @@cache[@k] = ::EM.connect( @host, @port, Handler, self )
+                @conn = ::EM.connect( @host, @port, Handler, self )
             }
         rescue EventMachine::ConnectionError => e
             exc = ConnectionError.new( e.to_s + " for '#{@k}'." )
@@ -298,9 +295,7 @@ class Client
 
     private
     def call_async( opts, &block )
-        conn = @@cache[@k]
-
-        if !conn
+        if !@conn
             raise ConnectionError.new( "Can't perform call," +
                 " no connection has been established for '#{@k}'." )
         end
@@ -309,7 +304,7 @@ class Client
 
         ::EM.defer {
             opts['token'] = @token
-            conn.set_callback_and_send( opts )
+            @conn.set_callback_and_send( opts )
         }
     end
 
