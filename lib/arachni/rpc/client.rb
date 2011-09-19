@@ -102,12 +102,12 @@ class Client
 
         def initialize( server )
             @server = server
-
-            @do_not_defer = Set.new
         end
 
         def post_init
             start_tls
+
+            @do_not_defer = Set.new
             @callbacks_mutex = Mutex.new
             @callbacks = {}
         end
