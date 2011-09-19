@@ -124,7 +124,11 @@ class Server
         # @return   [String]    IP address of the client
         #
         def peer_ip_addr
-            Socket.unpack_sockaddr_in( get_peername )[1]
+            if peername = get_peername
+                Socket.unpack_sockaddr_in( peername )[1]
+            else
+                'n/a'
+            end
         end
 
         #
@@ -260,7 +264,7 @@ class Server
     end
 
     def shutdown
-        wait_for = 5
+        wait_for = 2
 
         @logger.info( 'System' ){ "Shutting down in #{wait_for} seconds..." }
 
