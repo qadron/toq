@@ -184,6 +184,27 @@ class Server
     attr_reader :logger
     attr_writer :proxy
 
+    #
+    # Starts EventMachine and the RPC server.
+    #
+    # opts example:
+    #
+    #    {
+    #        :host  => 'localhost',
+    #        :port  => 7331,
+    #
+    #        # optional authentication token, if it doesn't match the one
+    #        # set on the server-side you'll be getting exceptions.
+    #        :token => 'superdupersecret',
+    #
+    #        # optional serializer (defaults to YAML)
+    #        # see the 'serializer' method at:
+    #        # http://eventmachine.rubyforge.org/EventMachine/Protocols/ObjectProtocol.html#M000369
+    #        :serializer => Marshal
+    #    }
+    #
+    # @param    [Hash]  opts
+    #
     def initialize( opts )
         @opts  = opts
         @token = @opts[:token]
@@ -196,10 +217,38 @@ class Server
         clear_handlers
     end
 
+    #
+    # This is a way to identify methods that pass their result to a block
+    # instead of simply returning them (which is the most usual operation of async methods.
+    #
+    # So no need to change your coding convetions to fit the RPC stuff,
+    # you can just decide dynamically based on the plethora of data which Ruby provides
+    # by its 'Method' class.
+    #
+    #    server.add_async_check {
+    #        |method|
+    #        #
+    #        # Must return 'true' for async and 'false' for sync.
+    #        #
+    #        # Very simple check here...
+    #        #
+    #        'async' ==  method.name.to_s.split( '_' )[0]
+    #    }
+    #
+    # @param    [Proc]  &block
+    #
     def add_async_check( &block )
         @async_checks << block
     end
 
+    #
+    # Adds a handler by name:
+    #
+    #    server.add_handler( 'myclass', MyClass.new )
+    #
+    # @param    [String]    name    name via which to make the object available over RPC
+    # @param    [Object]    obj     object instance
+    #
     def add_handler( name, obj )
         @objects[name] = obj
         @methods[name] = Set.new # no lookup overhead please :)
@@ -212,6 +261,10 @@ class Server
         }
     end
 
+    #
+    # Clears all handlers and their associated information like methods
+    # and async check blocks.
+    #
     def clear_handlers
         @objects = {}
         @methods = {}
@@ -220,6 +273,9 @@ class Server
         @async_methods = {}
     end
 
+    #
+    # Runs the server and blocks.
+    #
     def run
         @logger.info( 'System' ){ "RPC Server started." }
         @logger.info( 'System' ){ "Listening on #{@host}:#{@port}" }
@@ -263,10 +319,16 @@ class Server
         return res
     end
 
+    #
+    # @return   [TrueClass]
+    #
     def alive?
         return true
     end
 
+    #
+    # Shuts down the server after 2 seconds
+    #
     def shutdown
         wait_for = 2
 
