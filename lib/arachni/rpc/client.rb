@@ -211,7 +211,22 @@ class Client
         end
     end
 
+    #
+    # Options hash
+    #
+    # @return   [Hash]
+    #
     attr_reader :opts
+
+    #
+    # EventMachine connection
+    #
+    # @return   [EventMachine::Connection]
+    #
+    # @see http://eventmachine.rubyforge.org/EventMachine/Connection.html
+    #
+    attr_reader :conn
+
     attr_reader :do_not_defer
 
     #
