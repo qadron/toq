@@ -60,6 +60,10 @@ class Server
             start_tls
         end
 
+        def unbind
+            @server = nil
+        end
+
         #
         # Pretty much does all the work.
         #
