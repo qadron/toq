@@ -115,24 +115,16 @@ class Client
         #
         # Used to handle received objects.
         #
-        # The res hash should look something like:
-        #
-        #    {
-        #        'obj'   => object, # response to the RPC request
-        #        'cb_id' => callback_id # the callback ID as specified in the request
-        #    }
-        #
-        # @param    [Hash]    res   server response object
+        # @param    [Hash]    res   server response object ({Response})
         #
         def receive_object( res )
-
             if exception?( res )
                 res['obj'] = exception( res['obj'] )
             end
 
             if cb = get_callback( res )
 
-                if defer?( res['cb_id'] )
+                if defer?( res['callback_id'] )
                     # the callback might block a bit so tell EM to put it in a thread
                     ::EM.defer {
                         cb.call( res['obj'] )
@@ -143,10 +135,14 @@ class Client
             end
         end
 
+        # @param    [Hash]    res   server response object ({Response})
         def exception?( res )
             res['obj'].is_a?( Hash ) && res['obj']['exception'] ? true : false
         end
 
+        #
+        # Returns an exception based on the return object data.
+        #
         def exception( obj )
             klass = Arachni::RPC::Exceptions.const_get( obj['type'].to_sym )
             e = klass.new( obj['exception'] )
@@ -157,24 +153,14 @@ class Client
         #
         # Sets a callback and sends the request.
         #
-        # The request should look like:
-        #
-        #    {
-        #        'call'  => msg, # RPC message in the form of 'handler.method'
-        #        'args'  => args, # optional array of arguments for the remote method
-        #        'token' => token, # optional authentication token,
-        #        'cb_id' => callback_id # unique identifier for the callback,
-        #        'cb'    => callback to be invoked on the response
-        #    }
-        #
-        #
-        # @param    [Hash]      req     request hash
+        # @param    [Arachni::RPC::Request]      req     request
         #
         def set_callback_and_send( req )
-            cb = req.delete( 'cb' )
+            req_h = req.prepare_for_tx
 
-            do_not_defer = req.delete( 'do_not_defer' ) ? true : false
-            send_object( req.merge( 'cb_id' => set_callback( req, cb, do_not_defer ) ) )
+            cb_id = set_callback( req_h, req.callback, !req.defer? )
+            req_h.merge!( 'callback_id' => cb_id )
+            send_object( req_h )
         end
 
         def set_callback( obj, cb, do_not_defer )
@@ -198,7 +184,8 @@ class Client
         def get_callback( obj )
             @callbacks_mutex.lock
 
-            if @callbacks[obj['cb_id']] && cb = @callbacks.delete( obj['cb_id'] )
+            if @callbacks[obj['callback_id']] &&
+               cb = @callbacks.delete( obj['callback_id'] )
                 return cb
             end
 
@@ -295,42 +282,42 @@ class Client
     #
     def call( msg, *args, &block )
 
-        opts = {
-            'call' => msg,
-            'args' => args,
-            'cb'   => block
-        }
+        req = Request.new(
+            :message  => msg,
+            :args     => args,
+            :callback => block,
+            :token    => @token
+        )
 
         if block_given?
-            call_async( opts )
+            call_async( req )
         else
-            return call_sync( opts )
+            return call_sync( req )
         end
     end
 
     private
-    def call_async( opts, &block )
+    def call_async( req, &block )
         if !( @conn ||= ::EM.connect( @host, @port, Handler, self ) )
             raise ConnectionError.new( "Can't perform call," +
                 " no connection has been established for '#{@host}:#{@port}'." )
         end
 
-        opts['cb'] = block if block_given?
+        req.callback = block if block_given?
 
         ::EM.defer {
-            opts['token'] = @token
-            @conn.set_callback_and_send( opts )
+            @conn.set_callback_and_send( req )
         }
     end
 
-    def call_sync( opts )
+    def call_sync( req )
 
         ret = nil
         # if we're in the Reactor thread use s Fiber and if we're not
         # use a Thread
         if !::EM::reactor_thread?
             t   = Thread.current
-            call_async( opts ) {
+            call_async( req ) {
                 |obj|
                 t.wakeup
                 ret = obj
@@ -339,10 +326,10 @@ class Client
         else
             # Fibers do not work across threads so don't defer the callback
             # once the Handler gets to it
-            opts['do_not_defer'] = true
+            req.do_not_defer!
 
             f = Fiber.current
-            call_async( opts ) {
+            call_async( req ) {
                 |obj|
                 f.resume( obj )
             }

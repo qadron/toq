@@ -65,29 +65,16 @@ class Server
         end
 
         #
-        # Pretty much does all the work.
+        # Handles requests and sends back the responses.
         #
-        # The request should look like:
-        #
-        #    {
-        #        'call'  => msg, # RPC message in the form of 'handler.method'
-        #        'args'  => args, # optional array of arguments for the remote method
-        #        'token' => token, # optional authentication token,
-        #
-        #        # unique identifier for the callback, completely irrelevant to the server.
-        #        # it's passed right back to the client along with the result of the call.
-        #        'cb_id' => callback_id
-        #    }
-        #
-        #
-        # @param    [Hash]      req     request hash
+        # @param    [Hash]      req     request hash ( {Arachni::RPC::Request} )
         #
         def receive_object( req )
 
             # the method call may block a little so tell EventMachine to
             # stick it in its own thread.
             ::EM.defer( proc {
-                res = {}
+                res  = Response.new( :callback_id => req['callback_id'] )
                 peer = peer_ip_addr
 
                 begin
@@ -95,12 +82,12 @@ class Server
                     authenticate!( peer, req )
 
                     # grab the result of the method call
-                    res = @server.call( peer, req )
+                    res.merge!( @server.call( peer, req ) )
 
                 # handle exceptions and convert them to a simple hash,
                 # ready to be passed to the client.
                 rescue Exception => e
-                    res[:obj] = {
+                    res.obj = {
                         'exception' => e.to_s,
                         'backtrace' => e.backtrace,
                         'type'      => e.class.name.split( ':' )[-1]
@@ -111,16 +98,15 @@ class Server
                 end
 
                 res
-            }, proc { |res|
+            }, proc {
+                |res|
 
                 #
                 # pass the result of the RPC call back to the client
                 # along with the callback ID but *only* if it wan't async
                 # because server.call() will have already taken care of it
                 #
-                if !res[:async]
-                    send_object( { 'obj' => res[:obj], 'cb_id' => req['cb_id'] } )
-                end
+                send_object( res.prepare_for_tx ) if !res.async?
             })
         end
 
@@ -141,12 +127,12 @@ class Server
         # It will raise an exception if the token doesn't check-out.
         #
         # @param    [String]    peer    IP address of the client
-        # @oaram    [Hash]      req     request
+        # @param    [Hash]      req     request
         #
         def authenticate!( peer, req )
             if !valid_token?( req['token'] )
                 msg = 'Token missing or invalid while calling: ' +
-                    req['call']
+                    req['message']
                 @server.logger.error( 'Authenticator' ){ msg + " [on behalf of #{peer}]" }
                 raise( InvalidToken.new( msg ) )
             end
@@ -287,7 +273,7 @@ class Server
 
     def call( peer_ip_addr, req )
 
-        expr, args = req['call'], req['args']
+        expr, args = req['message'], req['args']
         meth_name, obj_name = parse_expr( expr )
 
         log_call( peer_ip_addr, expr, *args )
@@ -306,13 +292,22 @@ class Server
 
         # the proxy needs to know wether this is an async call because if it
         # is we'll have already send the response.
-        res = {}
-        if !( res[:async] = is_async?( obj_name, meth_name ) )
-            res[:obj] = @objects[obj_name].send( meth_name.to_sym, *args )
+        res = Response.new
+        res.async! if is_async?( obj_name, meth_name )
+
+        if !res.async?
+            res.obj = @objects[obj_name].send( meth_name.to_sym, *args )
         else
             @objects[obj_name].send( meth_name.to_sym, *args ){
                 |obj|
-                @proxy.send_object( { 'obj' => obj, 'cb_id' => req['cb_id'] } )
+
+                @proxy.send_object(
+                    Request.new(
+                        :obj => obj,
+                        :callback_id => req['callback_id']
+                    ).prepare_for_tx
+                )
+
             }
         end
 

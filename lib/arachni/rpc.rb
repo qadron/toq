@@ -15,6 +15,9 @@ require 'logger'
 require 'yaml'
 
 require File.join( File.expand_path( File.dirname( __FILE__ ) ), 'rpc', 'exceptions' )
+require File.join( File.expand_path( File.dirname( __FILE__ ) ), 'rpc', 'message' )
+require File.join( File.expand_path( File.dirname( __FILE__ ) ), 'rpc', 'request' )
+require File.join( File.expand_path( File.dirname( __FILE__ ) ), 'rpc', 'response' )
 require File.join( File.expand_path( File.dirname( __FILE__ ) ), 'rpc', 'server' )
 require File.join( File.expand_path( File.dirname( __FILE__ ) ), 'rpc', 'client' )
 require File.join( File.expand_path( File.dirname( __FILE__ ) ), 'rpc', 'em' )
