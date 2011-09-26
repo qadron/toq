@@ -8,8 +8,8 @@
 
 =end
 
-# require 'arachni/rpc'
-require File.join( File.expand_path( File.dirname( __FILE__ ) ), '../lib/arachni/', 'rpc' )
+cwd = File.expand_path( File.dirname( __FILE__ ) )
+require File.join( cwd, '../lib/arachni/', 'rpc' )
 
 
 # connect to the server
@@ -24,7 +24,11 @@ client = Arachni::RPC::Client.new(
     # optional serializer (defaults to YAML)
     # see the 'serializer' method at:
     # http://eventmachine.rubyforge.org/EventMachine/Protocols/ObjectProtocol.html#M000369
-    :serializer => Marshal
+    :serializer => Marshal,
+
+    # :ssl_ca     => cwd + '/pems/cacert.pem',
+    # :ssl_pkey   => cwd + '/pems/client/key.pem',
+    # :ssl_cert   => cwd + '/pems/client/cert.pem'
 )
 
 # Make things easy on the eyes using the mapper, it allows you to do this:

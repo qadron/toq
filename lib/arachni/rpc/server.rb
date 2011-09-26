@@ -48,6 +48,9 @@ class Server
 
         include ::EM::P::ObjectProtocol
         include ::Arachni::RPC::Exceptions
+        include ::Arachni::RPC::SSL
+
+        include ::Arachni::RPC::ConnectionUtilities
 
         def initialize( server )
             super
@@ -57,11 +60,17 @@ class Server
 
         # starts TLS
         def post_init
-            start_tls
+            start_ssl
         end
 
         def unbind
+            end_ssl
             @server = nil
+        end
+
+        def log( severity, progname, msg )
+            sev_sym = Logger.const_get( severity.to_s.upcase.to_sym )
+            @server.logger.add( sev_sym, msg, progname )
         end
 
         #
@@ -108,17 +117,6 @@ class Server
                 #
                 send_object( res.prepare_for_tx ) if !res.async?
             })
-        end
-
-        #
-        # @return   [String]    IP address of the client
-        #
-        def peer_ip_addr
-            if peername = get_peername
-                Socket.unpack_sockaddr_in( peername )[1]
-            else
-                'n/a'
-            end
         end
 
         #

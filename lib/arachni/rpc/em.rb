@@ -86,6 +86,14 @@ end
             q = Queue.new
             Thread.new do
                 ::EM::run do
+
+                    ::EM.error_handler do |e|
+                        $stderr.puts "error raised during event loop and rescued by
+                        EM.error_handler: #{e.message} (#{e.class})\n#{(e.backtrace ||
+                          [])[0..5].join("\n")}"
+                    end
+
+
                     @@reactor_tasks.each { |task| task.call }
                     q << true
                 end

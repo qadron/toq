@@ -97,6 +97,9 @@ class Client
     #
     class Handler < EventMachine::Connection
         include ::EM::P::ObjectProtocol
+        include ::Arachni::RPC::ConnectionUtilities
+
+        include ::Arachni::RPC::SSL
 
         attr_reader :callbacks
 
@@ -105,11 +108,15 @@ class Client
         end
 
         def post_init
-            start_tls
+            start_ssl
 
             @do_not_defer = Set.new
             @callbacks_mutex = Mutex.new
             @callbacks = {}
+        end
+
+        def unbind
+            end_ssl
         end
 
         #
@@ -231,7 +238,7 @@ class Client
     def initialize( opts )
 
         begin
-            @opts  = opts
+            @opts  = opts.merge( :role => :client )
             @token = @opts[:token]
 
             @host, @port = @opts[:host], @opts[:port]

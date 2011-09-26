@@ -8,8 +8,8 @@
 
 =end
 
-# require 'arachni/rpc'
-require File.join( File.expand_path( File.dirname( __FILE__ ) ), '../lib/arachni/', 'rpc' )
+cwd = File.expand_path( File.dirname( __FILE__ ) )
+require File.join( cwd, '../lib/arachni/', 'rpc' )
 
 class Parent
     def foo( arg )
@@ -49,7 +49,11 @@ server = Arachni::RPC::Server.new(
     # optional serializer (defaults to YAML)
     # see the 'serializer' method at:
     # http://eventmachine.rubyforge.org/EventMachine/Protocols/ObjectProtocol.html#M000369
-    :serializer => Marshal
+    :serializer => Marshal,
+
+    # :ssl_ca     => cwd + '/pems/cacert.pem',
+    # :ssl_pkey   => cwd + '/pems/server/key.pem',
+    # :ssl_cert   => cwd + '/pems/server/cert.pem'
 )
 
 #
