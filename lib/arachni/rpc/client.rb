@@ -256,6 +256,13 @@ class Client
     end
 
     #
+    # Closes the connection and releases system resources
+    #
+    def close
+        @conn.close_connection
+    end
+
+    #
     # Calls a remote method and grabs the result.
     #
     # There are 2 ways to perform a call, async (non-blocking) and sync (blocking).
