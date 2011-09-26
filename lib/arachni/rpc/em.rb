@@ -8,7 +8,7 @@
 
 =end
 
-require 'eventmachine'
+require File.join( File.expand_path( File.dirname( __FILE__ ) ), '../', 'rpc' )
 require 'fiber'
 
 module Arachni
