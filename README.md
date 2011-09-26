@@ -10,7 +10,7 @@
      <tr/>
     <tr>
         <th>Code Documentation</th>
-        <td><a href="http://rubydoc.info/github/Arachni/arachni-rpc/master/file/README.md">http://rubydoc.info/github/Arachni/arachni-rpc/master/file/README.md</a></td>
+        <td><a href="http://rubydoc.info/github/Arachni/arachni-rpc/">http://rubydoc.info/github/Arachni/arachni-rpc/</a></td>
     </tr>
     <tr>
        <th>Author</th>
