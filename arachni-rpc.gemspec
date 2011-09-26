@@ -22,11 +22,13 @@ Gem::Specification.new do |s|
       s.files             = %w( README.md Rakefile LICENSE.md CHANGELOG.md )
       s.files            += Dir.glob("lib/**/**")
       s.files            += Dir.glob("examples/**/**")
+      s.test_files        = Dir.glob("examples/**/**")
+      s.test_files       += Dir.glob("spec/**/**")
 
       s.extra_rdoc_files  = %w( README.md LICENSE.md CHANGELOG.md )
       s.rdoc_options      = ["--charset=UTF-8"]
 
-      s.add_dependency "eventmachine",">= 1.0.0.beta.3"
+      s.add_dependency "eventmachine",">= 1.0.0.beta.4"
 
       s.description = <<description
         EventMachine based RPC client and server capable of a few thousands requests per second (depending on call size, network conditions and the like).
