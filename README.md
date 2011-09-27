@@ -63,6 +63,17 @@ If you want to clone the repository and work with the source code:
     rake install
 
 
+## Running the Specs
+
+In order to run the specs you must first fire up 2 sample servers like so:
+
+    ruby spec/servers/basic.rb
+    ruby spec/servers/with_ssl_primitives.rb
+
+Then:
+
+    rake spec
+
 ## Bug reports/Feature requests
 Please send your feedback using Github's issue system at
 [http://github.com/arachni/arachni-rpc/issues](http://github.com/arachni/arachni-rpc/issues).
