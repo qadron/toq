@@ -261,12 +261,20 @@ class Server
     # Runs the server and blocks.
     #
     def run
-        @logger.info( 'System' ){ "RPC Server started." }
-        @logger.info( 'System' ){ "Listening on #{@host}:#{@port}" }
         Arachni::RPC::EM.add_to_reactor {
-            ::EM.start_server( @host, @port, Proxy, self )
+            start
         }
         Arachni::RPC::EM.block!
+    end
+
+    #
+    # Starts the server but does not block.
+    #
+    def start
+        @logger.info( 'System' ){ "RPC Server started." }
+        @logger.info( 'System' ){ "Listening on #{@host}:#{@port}" }
+
+        ::EM.start_server( @host, @port, Proxy, self )
     end
 
     def call( peer_ip_addr, req )
