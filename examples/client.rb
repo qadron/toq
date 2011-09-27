@@ -26,9 +26,9 @@ client = Arachni::RPC::Client.new(
     # http://eventmachine.rubyforge.org/EventMachine/Protocols/ObjectProtocol.html#M000369
     :serializer => Marshal,
 
-    # :ssl_ca     => cwd + '/pems/cacert.pem',
-    # :ssl_pkey   => cwd + '/pems/client/key.pem',
-    # :ssl_cert   => cwd + '/pems/client/cert.pem'
+    # :ssl_ca     => cwd + '/../spec/pems/cacert.pem',
+    # :ssl_pkey   => cwd + '/../spec/pems/client/key.pem',
+    # :ssl_cert   => cwd + '/../spec/pems/client/cert.pem'
 )
 
 # Make things easy on the eyes using the mapper, it allows you to do this:

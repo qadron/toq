@@ -51,9 +51,9 @@ server = Arachni::RPC::Server.new(
     # http://eventmachine.rubyforge.org/EventMachine/Protocols/ObjectProtocol.html#M000369
     :serializer => Marshal,
 
-    # :ssl_ca     => cwd + '/pems/cacert.pem',
-    # :ssl_pkey   => cwd + '/pems/server/key.pem',
-    # :ssl_cert   => cwd + '/pems/server/cert.pem'
+    # :ssl_ca     => cwd + '/../spec/pems/cacert.pem',
+    # :ssl_pkey   => cwd + '/../spec/pems/server/key.pem',
+    # :ssl_cert   => cwd + '/../spec/pems/server/cert.pem'
 )
 
 #
