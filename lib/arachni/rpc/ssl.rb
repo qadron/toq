@@ -87,6 +87,15 @@ module SSL
     #
     # To be implemented by the parent.
     #
+    # @return   [String] IP address of the peer
+    #
+    def peer_ip_addr
+        'n/a'
+    end
+
+    #
+    # To be implemented by the parent.
+    #
     # By default, it will 'warn' if the severity is :error and will 'raise'
     # if the severity if :fatal.
     #
