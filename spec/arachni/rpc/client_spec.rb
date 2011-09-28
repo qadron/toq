@@ -41,11 +41,10 @@ describe Arachni::RPC::Client do
             it "should be able to perform synchronous calls" do
                 ::EM.run do
 
-                    Arachni::RPC::EM::Synchrony.run do
+                    ::Arachni::RPC::EM::Synchrony.run do
                         @arg.should == start_client( rpc_opts ).call( 'test.foo', @arg )
+                        ::EM.stop
                     end
-
-                    ::EM.stop
                 end
             end
 
@@ -134,7 +133,7 @@ describe Arachni::RPC::Client do
         client = start_client( rpc_opts )
 
         n    = 10000
-        cnt  = 1
+        cnt  = 0
 
         mismatches = []
 
@@ -145,15 +144,23 @@ describe Arachni::RPC::Client do
 
                 cnt += 1
 
-                ::EM.stop if cnt == n
-
                 mismatches << [i, res] if i != res
+                ::EM.stop if cnt == n || !mismatches.empty?
             }
         }
 
         Arachni::RPC::EM.block!
 
         mismatches.should be_empty
+    end
+
+    it "should throw error when connecting to inexistent server" do
+        start_client( rpc_opts.merge( :port => 9999 ) ).call( 'test.foo', @arg ) {
+            |res|
+            res.rpc_connection_error?.should be_true
+            ::EM.stop
+        }
+        Arachni::RPC::EM.block!
     end
 
     context "when using valid SSL primitives" do
@@ -166,13 +173,12 @@ describe Arachni::RPC::Client do
 
     context "when using invalid SSL primitives" do
         it "should not be able to establish a connection" do
-            begin
-                Timeout::timeout( 1 ) {
-                    start_client( rpc_opts_with_invalid_ssl_primitives ).call( 'test.foo', @arg )
-                }
-            rescue Exception => e
-                e.class.should == Timeout::Error
-            end
+            start_client( rpc_opts_with_invalid_ssl_primitives ).call( 'test.foo', @arg ){
+                |res|
+                res.rpc_connection_error?.should be_true
+                ::EM.stop
+            }
+            Arachni::RPC::EM.block!
         end
     end
 
