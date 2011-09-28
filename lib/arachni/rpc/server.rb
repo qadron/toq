@@ -96,10 +96,22 @@ class Server
                 # handle exceptions and convert them to a simple hash,
                 # ready to be passed to the client.
                 rescue Exception => e
+
+                    type = ''
+
+                    # if it's an RPC exception pass the type along as is
+                    if e.rpc_exception?
+                        type = e.class.name.split( ':' )[-1]
+
+                    # otherwise set it to a RemoteExeption
+                    else
+                        type = 'RemoteException'
+                    end
+
                     res.obj = {
                         'exception' => e.to_s,
                         'backtrace' => e.backtrace,
-                        'type'      => e.class.name.split( ':' )[-1]
+                        'type'      => type
                     }
 
                     msg = "#{e.to_s}\n#{e.backtrace.join( "\n" )}"
