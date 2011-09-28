@@ -105,9 +105,13 @@ class Client
 
         def initialize( server )
             @server = server
+
+            @status = :idle
         end
 
         def post_init
+            @status = :active
+
             start_ssl
 
             @do_not_defer = Set.new
@@ -116,7 +120,27 @@ class Client
         end
 
         def unbind
+            @status = :closed
+
             end_ssl
+
+            e = Arachni::RPC::Exceptions::ConnectionError.new( 'Connection closed' )
+
+            @callbacks_mutex.synchronize {
+                if !(cb_keys = @callbacks.keys).empty?
+                    cb_keys.each {
+                        |k|
+                        begin
+                            @callbacks.delete( k ).call( e )
+                        rescue
+                        end
+                    }
+                end
+            }
+        end
+
+        def status
+            @status
         end
 
         #
@@ -245,9 +269,17 @@ class Client
             @do_not_defer = Set.new
 
             @conn = nil
-            ::Arachni::RPC::EM.add_to_reactor{
-                @conn = ::EM.connect( @host, @port, Handler, self )
+
+            Arachni::RPC::EM.ensure_em_running!
+
+            ::EM.schedule {
+                 @conn = ::EM.connect( @host, @port, Handler, self )
             }
+
+            # if @conn.status == :closed
+                # raise ConnectionError.new( "Can't connect to '#{@host}:#{@port}'." )
+            # end
+
         rescue EventMachine::ConnectionError => e
             exc = ConnectionError.new( e.to_s + " for '#{@k}'." )
             exc.set_backtrace( e.backtrace )
@@ -310,7 +342,7 @@ class Client
 
         req.callback = block if block_given?
 
-        ::EM.defer {
+        ::EM.schedule {
             @conn.set_callback_and_send( req )
         }
     end
