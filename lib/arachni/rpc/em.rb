@@ -71,7 +71,7 @@ end
     #
     def block!
         # beware of deadlocks, we can't join our own thread
-        ::EM.reactor_thread.join if !::EM::reactor_thread?
+        ::EM.reactor_thread.join if ::EM.reactor_thread && !::EM::reactor_thread?
     end
 
     #
@@ -92,7 +92,6 @@ end
                         "#{e.message} (#{e.class})\n#{(e.backtrace ||
                             [])[0..5].join("\n")}"
                     end
-
 
                     @@reactor_tasks.each { |task| task.call }
                     q << true
