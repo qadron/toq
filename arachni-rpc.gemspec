@@ -9,7 +9,7 @@
 =end
 
 Gem::Specification.new do |s|
-      require File.expand_path( File.dirname( __FILE__ ) ) + '/lib/arachni/rpc'
+      require File.expand_path( File.dirname( __FILE__ ) ) + '/lib/arachni/rpc/version'
 
       s.name              = "arachni-rpc"
       s.version           = Arachni::RPC::VERSION
@@ -28,7 +28,8 @@ Gem::Specification.new do |s|
       s.extra_rdoc_files  = %w( README.md LICENSE.md CHANGELOG.md )
       s.rdoc_options      = ["--charset=UTF-8"]
 
-      s.add_dependency "eventmachine",">= 1.0.0.beta.4"
+      s.add_dependency "eventmachine",  "~> 1.0.0.beta.4"
+      s.add_dependency "em-synchrony",  "~> 1.0.0"
 
       s.description = <<description
         EventMachine based RPC client and server capable of a few thousands requests per second (depending on call size, network conditions and the like).

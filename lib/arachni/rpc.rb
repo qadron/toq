@@ -14,6 +14,7 @@ require 'set'
 require 'logger'
 require 'yaml'
 
+require File.join( File.expand_path( File.dirname( __FILE__ ) ), 'rpc', 'version' )
 require File.join( File.expand_path( File.dirname( __FILE__ ) ), 'rpc', 'exceptions' )
 require File.join( File.expand_path( File.dirname( __FILE__ ) ), 'rpc', 'message' )
 require File.join( File.expand_path( File.dirname( __FILE__ ) ), 'rpc', 'request' )
@@ -25,8 +26,3 @@ require File.join( File.expand_path( File.dirname( __FILE__ ) ), 'rpc', 'client'
 require File.join( File.expand_path( File.dirname( __FILE__ ) ), 'rpc', 'em' )
 require 'yaml'
 
-module Arachni
-module RPC
-    VERSION = '0.1'
-end
-end

@@ -58,7 +58,7 @@ end
 desc "Build and install the arachni gem."
 task :install  => [ :build ] do
 
-    require File.expand_path( File.dirname( __FILE__ ) ) + '/lib/arachni/rpc'
+    require File.expand_path( File.dirname( __FILE__ ) ) + '/lib/arachni/rpc/version'
 
     sh "gem install arachni-rpc-#{Arachni::RPC::VERSION}.gem"
 end
@@ -70,7 +70,7 @@ end
 desc "Push a new version to Gemcutter"
 task :publish => [ :build ] do
 
-    require File.expand_path( File.dirname( __FILE__ ) ) + '/lib/arachni/rpc'
+    require File.expand_path( File.dirname( __FILE__ ) ) + '/lib/arachni/rpc/version'
 
     sh "gem push arachni-rpc-#{Arachni::RPC::VERSION}.gem"
 end
