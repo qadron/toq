@@ -102,6 +102,15 @@ describe Arachni::RPC::Client do
                 Arachni::RPC::EM.block!
             end
 
+            it "should be returned when there's a remote exception" do
+                start_client( rpc_opts ).call( 'test.foo' ) {
+                    |res|
+                    res.rpc_remote_exception?.should be_true
+                    ::EM.stop
+                }
+                Arachni::RPC::EM.block!
+            end
+
         end
 
         context 'when performing synchronous calls' do
@@ -111,8 +120,6 @@ describe Arachni::RPC::Client do
                     start_client( rpc_opts ).call( 'bar2.foo' )
                 rescue Exception => e
                     e.class.should == Arachni::RPC::Exceptions::InvalidObject
-                ensure
-                    # ::EM.stop
                 end
             end
 
@@ -121,11 +128,18 @@ describe Arachni::RPC::Client do
                     start_client( rpc_opts ).call( 'test.bar2' )
                 rescue Exception => e
                     e.class.should == Arachni::RPC::Exceptions::InvalidMethod
-                ensure
-                    # ::EM.stop
                 end
 
             end
+
+            it "should be raised when there's a remote exception" do
+                begin
+                    start_client( rpc_opts ).call( 'test.foo' )
+                rescue Exception => e
+                    e.rpc_remote_exception?.should be_true
+                end
+            end
+
         end
     end
 
