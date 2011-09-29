@@ -47,8 +47,33 @@ bench = Arachni::RPC::Client::Mapper.new( client, 'bench' )
 #
 bench.foo( 'This is an async call to "bench.foo".' ) {
     |res|
+
     p res
     # => "This is an async call to \"bench.foo\"."
+
+    # did something RPC related go wrong?
+    p res.rpc_exception?
+    # => false
+
+    # did something go wrong on the server-side?
+    p res.rpc_remote_exception?
+    # => false
+
+    # did the connection die abruptly?
+    p res.rpc_connection_error?
+    # => false
+
+    # did we call an object for which there is no handler on the server-side?
+    p res.rpc_invalid_object_error?
+    # => false
+
+    # did we call a server-side method that isn't existent or public?
+    p res.rpc_invalid_method_error?
+    # => false
+
+    # was there an authentication token mismatch?
+    p res.rpc_invalid_token_error?
+    # => false
 }
 
 
