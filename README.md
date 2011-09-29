@@ -40,13 +40,14 @@ It is under development and will ultimately provide the basis for <a href="http:
 It's capable of:
 
  - performing and handling a few thousand requests per second (depending on call size, network conditions and the like)
- - TLS encrytion
+ - TLS encrytion (with peer verification)
  - asynchronous and synchronous requests
- - handling remote asynchronous calls that require a block
+ - handling server-side asynchronous calls that require a block (or any method that requires a block in general)
 
 ## Usage
 
-Check out the files in the <i>examples/</i> directory, they go through everything in great detail.
+Check out the files in the <i>examples/</i> directory, they go through everything in great detail.<br/>
+The tests under <i>spec/arachni/rpc/</i> cover everything too so they can probably help you out.
 
 ## Installation
 
