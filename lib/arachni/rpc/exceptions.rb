@@ -9,53 +9,46 @@
 =end
 
 #
-# Adds helper methods to all objects to make identifying RPC Exceptions easier.
+# RPC Exceptions have methods that help identify them based on type.
+#
+# So in order to allow evaluations like:
+#
+#    my_object.rpc_connection_error?
+#
+# to be possible on all objects these helper methods need to be available for
+# all objects.
+#
+# By default they'll return false, individual RPC Exceptions will overwrite them to
+# return true when applicable.
 #
 class Object
 
-    #
-    # @return   [Bool]  true if self is a connection error exception
-    #                       ({::Arachni::RPC::Exceptions::ConnectionError})
-    #
+    # @return   [Bool]  false
     def rpc_connection_error?
         false
     end
 
-    #
-    # @return   [Bool]  true if self represents a remote exception
-    #                       ({::Arachni::RPC::Exceptions::RemoteException})
-    #
+    # @return   [Bool]  false
     def rpc_remote_exception?
         false
     end
 
-    #
-    # @return   [Bool]  true if self represents an invalid object exception
-    #                       ({::Arachni::RPC::Exceptions::InvalidMethod})
-    #
+    # @return   [Bool]  false
     def rpc_invalid_object_error?
         false
     end
 
-    #
-    # @return   [Bool]  true if self represents an invalid method exception
-    #                       ({::Arachni::RPC::Exceptions::InvalidMethod})
-    #
+    # @return   [Bool]  false
     def rpc_invalid_method_error?
         false
     end
 
-    #
-    # @return   [Bool]  true if self represents an invalid token exception
-    #                       ({::Arachni::RPC::Exceptions::InvalidToken})
-    #
+    # @return   [Bool]  false
     def rpc_invalid_token_error?
         false
     end
 
-    #
-    # @return   [Bool]  true if self is any sort of RPC exception ({::Arachni::RPC::Exceptions})
-    #
+    # @return   [Bool]  false
     def rpc_exception?
         false
     end
