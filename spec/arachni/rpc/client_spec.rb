@@ -87,7 +87,7 @@ describe Arachni::RPC::Client do
             it "should be returned when requesting inexistent objects" do
                 start_client( rpc_opts ).call( 'bar.foo' ) {
                     |res|
-                    res.class.should == Arachni::RPC::Exceptions::InvalidObject
+                    res.rpc_invalid_object_error?.should be_true
                     ::EM.stop
                 }
                 Arachni::RPC::EM.block!
@@ -96,7 +96,7 @@ describe Arachni::RPC::Client do
             it "should be returned when requesting inexistent or non-public methods" do
                 start_client( rpc_opts ).call( 'test.bar' ) {
                     |res|
-                    res.class.should == Arachni::RPC::Exceptions::InvalidMethod
+                    res.rpc_invalid_method_error?.should be_true
                     ::EM.stop
                 }
                 Arachni::RPC::EM.block!
@@ -119,7 +119,7 @@ describe Arachni::RPC::Client do
                 begin
                     start_client( rpc_opts ).call( 'bar2.foo' )
                 rescue Exception => e
-                    e.class.should == Arachni::RPC::Exceptions::InvalidObject
+                    e.rpc_invalid_object_error?.should be_true
                 end
             end
 
@@ -127,7 +127,7 @@ describe Arachni::RPC::Client do
                 begin
                     start_client( rpc_opts ).call( 'test.bar2' )
                 rescue Exception => e
-                    e.class.should == Arachni::RPC::Exceptions::InvalidMethod
+                    e.rpc_invalid_method_error?.should be_true
                 end
 
             end

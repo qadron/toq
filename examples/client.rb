@@ -114,6 +114,12 @@ end
 blah.something {
     |res|
     p res # => #<Arachni::RPC::Exceptions::InvalidObject: Trying to access non-existent object 'blah'.>
+
+    # RPC Exception helper methods have been added to all Ruby objects (except BasicObject)
+    # so they'll always be there when you need them.
+
+    p res.rpc_exception? # => true
+    p res.rpc_invalid_object_error? # => true
 }
 
 #
