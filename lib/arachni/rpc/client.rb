@@ -288,7 +288,10 @@ class Client
     end
 
     #
-    # Closes the connection and releases system resources
+    # Closes the connection and releases system resources.
+    #
+    # Don't forget to close the connection after you're done with it,
+    # otherwise precious memory won't be reclaimed.
     #
     def close
         @conn.close_connection
