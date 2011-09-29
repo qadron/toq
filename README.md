@@ -43,6 +43,7 @@ It's capable of:
  - TLS encrytion (with peer verification)
  - asynchronous and synchronous requests
  - handling server-side asynchronous calls that require a block (or any method that requires a block in general)
+ - token-based authentication
 
 ## Usage
 
