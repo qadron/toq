@@ -254,7 +254,35 @@ class Client
     #        # optional serializer (defaults to YAML)
     #        # see the 'serializer' method at:
     #        # http://eventmachine.rubyforge.org/EventMachine/Protocols/ObjectProtocol.html#M000369
-    #        :serializer => Marshal
+    #        :serializer => Marshal,
+    #
+    #        #
+    #        # Connection keep alive is set to true by default, this means that
+    #        # a single connection will be maintained and all calls will pass
+    #        # through it.
+    #        # This bypasses a bug in EventMachine and allows you to perform thousands
+    #        # of calls without issue.
+    #        #
+    #        # However, you are responsible for closing the connection when you're done.
+    #        #
+    #        # If keep alive is set to false then each call will go through its own connection
+    #        # and the responsibility for closing that connection falls on Arachni-RPC.
+    #        #
+    #        # Unfortunately, if you try to make a greater number of calls than your system's
+    #        # maximum open file descriptors limit EventMachine will freak-out.
+    #        #
+    #        :keep_alive => false,
+    #
+    #        #
+    #        # In order to enable peer verification one must first provide
+    #        # the following:
+    #        #
+    #        # SSL CA certificate
+    #        :ssl_ca     => cwd + '/../spec/pems/cacert.pem',
+    #        # SSL private key
+    #        :ssl_pkey   => cwd + '/../spec/pems/client/key.pem',
+    #        # SSL certificate
+    #        :ssl_cert   => cwd + '/../spec/pems/client/cert.pem'
     #    }
     #
     # @param    [Hash]  opts
@@ -273,7 +301,7 @@ class Client
             Arachni::RPC::EM.ensure_em_running!
 
             ::EM.schedule {
-                 @conn = ::EM.connect( @host, @port, Handler, self )
+                 @conn = connect
             }
 
             # if @conn.status == :closed
@@ -337,13 +365,33 @@ class Client
     end
 
     private
+
+
+    def connect
+        ::EM.connect( @host, @port, Handler, self )
+    end
+
     def call_async( req, &block )
-        if !( @conn ||= ::EM.connect( @host, @port, Handler, self ) )
+
+        callback = nil
+
+        if !keep_alive?
+            @conn = connect
+
+            callback = Proc.new {
+                |res|
+                @conn.close_connection
+                block.call( res )
+            }
+
+        elsif !( @conn ||= connect )
             raise ConnectionError.new( "Can't perform call," +
                 " no connection has been established for '#{@host}:#{@port}'." )
+
+            callback = block
         end
 
-        req.callback = block if block_given?
+        req.callback = callback if block_given?
 
         ::EM.schedule {
             @conn.set_callback_and_send( req )
@@ -388,6 +436,10 @@ class Client
 
         raise ret if ret.is_a?( Exception )
         return ret
+    end
+
+    def keep_alive?
+        @opts[:keep_alive].nil? ? true : @opts[:keep_alive] == true
     end
 
 end

@@ -26,9 +26,33 @@ client = Arachni::RPC::Client.new(
     # http://eventmachine.rubyforge.org/EventMachine/Protocols/ObjectProtocol.html#M000369
     :serializer => Marshal,
 
-    # :ssl_ca     => cwd + '/../spec/pems/cacert.pem',
-    # :ssl_pkey   => cwd + '/../spec/pems/client/key.pem',
-    # :ssl_cert   => cwd + '/../spec/pems/client/cert.pem'
+    #
+    # Connection keep alive is set to true by default, this means that
+    # a single connection will be maintained and all calls will pass
+    # through it.
+    # This bypasses a bug in EventMachine and allows you to perform thousands
+    # of calls without issue.
+    #
+    # However, you are responsible for closing the connection when you're done.
+    #
+    # If keep alive is set to false then each call will go through its own connection
+    # and the responsibility for closing that connection falls on Arachni-RPC.
+    #
+    # Unfortunately, if you try to make a greater number of calls than your system's
+    # maximum open file descriptors limit EventMachine will freak-out.
+    #
+    :keep_alive => false,
+
+    #
+    # In order to enable peer verification one must first provide
+    # the following:
+    #
+    # SSL CA certificate
+    :ssl_ca     => cwd + '/../spec/pems/cacert.pem',
+    # SSL private key
+    :ssl_pkey   => cwd + '/../spec/pems/client/key.pem',
+    # SSL certificate
+    :ssl_cert   => cwd + '/../spec/pems/client/cert.pem'
 )
 
 # Make things easy on the eyes using the mapper, it allows you to do this:

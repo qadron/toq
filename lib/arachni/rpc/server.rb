@@ -196,7 +196,18 @@ class Server
     #        # optional serializer (defaults to YAML)
     #        # see the 'serializer' method at:
     #        # http://eventmachine.rubyforge.org/EventMachine/Protocols/ObjectProtocol.html#M000369
-    #        :serializer => Marshal
+    #        :serializer => Marshal,
+    #
+    #        #
+    #        # In order to enable peer verification one must first provide
+    #        # the following:
+    #        #
+    #        # SSL CA certificate
+    #        :ssl_ca     => cwd + '/../spec/pems/cacert.pem',
+    #        # SSL private key
+    #        :ssl_pkey   => cwd + '/../spec/pems/client/key.pem',
+    #        # SSL certificate
+    #        :ssl_cert   => cwd + '/../spec/pems/client/cert.pem'
     #    }
     #
     # @param    [Hash]  opts
