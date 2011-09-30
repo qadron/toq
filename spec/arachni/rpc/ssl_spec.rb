@@ -4,8 +4,7 @@ class SSL
     include Arachni::RPC::SSL
 
     def initialize( opts )
-        server = Struct.new( :opts )
-        @server = server.new( opts )
+        @opts = opts
     end
 end
 
