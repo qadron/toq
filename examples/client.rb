@@ -48,11 +48,11 @@ client = Arachni::RPC::Client.new(
     # the following:
     #
     # SSL CA certificate
-    :ssl_ca     => cwd + '/../spec/pems/cacert.pem',
+    # :ssl_ca     => cwd + '/../spec/pems/cacert.pem',
     # SSL private key
-    :ssl_pkey   => cwd + '/../spec/pems/client/key.pem',
+    # :ssl_pkey   => cwd + '/../spec/pems/client/key.pem',
     # SSL certificate
-    :ssl_cert   => cwd + '/../spec/pems/client/cert.pem'
+    # :ssl_cert   => cwd + '/../spec/pems/client/cert.pem'
 )
 
 # Make things easy on the eyes using the mapper, it allows you to do this:
@@ -76,29 +76,30 @@ bench.foo( 'This is an async call to "bench.foo".' ) {
     # => "This is an async call to \"bench.foo\"."
 
     # did something RPC related go wrong?
-    p res.rpc_exception?
+    # p res.rpc_exception?
     # => false
 
     # did something go wrong on the server-side?
-    p res.rpc_remote_exception?
+    # p res.rpc_remote_exception?
     # => false
 
     # did the connection die abruptly?
-    p res.rpc_connection_error?
+    # p res.rpc_connection_error?
     # => false
 
     # did we call an object for which there is no handler on the server-side?
-    p res.rpc_invalid_object_error?
+    # p res.rpc_invalid_object_error?
     # => false
 
     # did we call a server-side method that isn't existent or public?
-    p res.rpc_invalid_method_error?
+    # p res.rpc_invalid_method_error?
     # => false
 
     # was there an authentication token mismatch?
-    p res.rpc_invalid_token_error?
+    # p res.rpc_invalid_token_error?
     # => false
 }
+
 
 
 #
@@ -167,8 +168,8 @@ blah.something {
     # RPC Exception helper methods have been added to all Ruby objects (except BasicObject)
     # so they'll always be there when you need them.
 
-    p res.rpc_exception? # => true
-    p res.rpc_invalid_object_error? # => true
+    # p res.rpc_exception? # => true
+    # p res.rpc_invalid_object_error? # => true
 }
 
 #
