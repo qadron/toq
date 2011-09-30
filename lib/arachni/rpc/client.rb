@@ -103,9 +103,8 @@ class Client
 
         attr_reader :callbacks
 
-        def initialize( server )
-            @server = server
-
+        def initialize( opts )
+            @opts = opts
             @status = :idle
         end
 
@@ -225,7 +224,7 @@ class Client
         end
 
         def serializer
-            @server.opts[:serializer] ? @server.opts[:serializer] : YAML
+            @opts[:serializer] ? @opts[:serializer] : YAML
         end
     end
 
@@ -293,21 +292,14 @@ class Client
             @opts  = opts.merge( :role => :client )
             @token = @opts[:token]
 
+            @opts[:keep_alive]  = keep_alive?
+
             @host, @port = @opts[:host], @opts[:port]
             @do_not_defer = Set.new
 
             @conn = nil
 
             Arachni::RPC::EM.ensure_em_running!
-
-            ::EM.schedule {
-                 @conn = connect
-            }
-
-            # if @conn.status == :closed
-                # raise ConnectionError.new( "Can't connect to '#{@host}:#{@port}'." )
-            # end
-
         rescue EventMachine::ConnectionError => e
             exc = ConnectionError.new( e.to_s + " for '#{@k}'." )
             exc.set_backtrace( e.backtrace )
@@ -322,7 +314,7 @@ class Client
     # otherwise precious memory won't be reclaimed.
     #
     def close
-        @conn.close_connection
+        @conn.close_connection if @conn
     end
 
     #
@@ -366,9 +358,20 @@ class Client
 
     private
 
-
     def connect
-        ::EM.connect( @host, @port, Handler, self )
+        ::EM.connect( @host, @port, Handler, @opts )
+    end
+
+    def cleanup!
+        cnt = 0
+        ObjectSpace.each_object( Arachni::RPC::Client::Handler ) {
+            |obj|
+            if obj.status == :active && obj.callbacks.empty?
+                obj.close_connection
+                cnt += 1
+            end
+        }
+        return cnt
     end
 
     def call_async( req, &block )
@@ -377,24 +380,16 @@ class Client
 
         if !keep_alive?
             @conn = connect
-
-            callback = Proc.new {
-                |res|
-                @conn.close_connection
-                block.call( res )
-            }
-
         elsif !( @conn ||= connect )
             raise ConnectionError.new( "Can't perform call," +
                 " no connection has been established for '#{@host}:#{@port}'." )
-
-            callback = block
         end
 
-        req.callback = callback if block_given?
+        req.callback = block if block_given?
 
         ::EM.schedule {
             @conn.set_callback_and_send( req )
+            cleanup! if !keep_alive?
         }
     end
 

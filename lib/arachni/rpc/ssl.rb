@@ -62,12 +62,9 @@ module SSL
         ssl_opts = {}
         if ssl_opts?
 
-            # @@cert_chain_file ||= merge_key_with_cert( @server.opts[:ssl_pkey],
-                # @server.opts[:ssl_cert] )
-
             ssl_opts = {
-                    :private_key_file => @server.opts[:ssl_pkey],
-                    :cert_chain_file  => @server.opts[:ssl_cert],
+                    :private_key_file => @opts[:ssl_pkey],
+                    :cert_chain_file  => @opts[:ssl_cert],
                     :verify_peer      => true
                 }
 
@@ -99,25 +96,12 @@ module SSL
         raise "#{progname}: #{msg}" if severity == :fatal
     end
 
-    # def merge_key_with_cert( key, cert )
-        # cert_chain_file = Tempfile.new( 'key+cert.pem' )
-#
-        # begin
-            # cert_chain_file.write( File.read( key ) + "\n" )
-            # cert_chain_file.write( File.read( cert) )
-#
-            # return cert_chain_file.path
-        # ensure
-            # cert_chain_file.close
-        # end
-    # end
-
     #
     # @return   [OpenSSL::X509::Store]  certificate store
     #
     def ca_store
         if !@ca_store
-            if file = @server.opts[:ssl_ca]
+            if file = @opts[:ssl_ca]
                 @ca_store = OpenSSL::X509::Store.new
                 @ca_store.add_file( file )
             else
@@ -167,7 +151,7 @@ module SSL
     def ssl_handshake_completed
         if are_we_a_client? && ssl_opts? &&
            !OpenSSL::SSL.verify_certificate_identity( @last_seen_cert,
-                @server.opts[:host] )
+                @opts[:host] )
 
             log( :error, 'SSL',
                 "The hostname '#{@server.opts[:host]}' " +
@@ -179,11 +163,11 @@ module SSL
     end
 
     def are_we_a_client?
-        @server.opts[:role] == :client
+        @opts[:role] == :client
     end
 
     def ssl_opts?
-        @server.opts[:ssl_ca] && @server.opts[:ssl_pkey] && @server.opts[:ssl_cert]
+        @opts[:ssl_ca] && @opts[:ssl_pkey] && @opts[:ssl_cert]
     end
 
 end

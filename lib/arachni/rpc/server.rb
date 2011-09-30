@@ -55,6 +55,7 @@ class Server
         def initialize( server )
             super
             @server = server
+            @opts   = server.opts
             @server.proxy = self
         end
 
@@ -65,7 +66,6 @@ class Server
 
         def unbind
             end_ssl
-            @server = nil
         end
 
         def log( severity, progname, msg )
