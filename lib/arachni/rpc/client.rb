@@ -158,8 +158,8 @@ class Client
                 if !@opts[:keep_alive]
                     callback = Proc.new {
                         |obj|
-                        close_connection
                         cb.call( obj )
+                        close_connection
                     }
                 else
                     callback = cb
@@ -375,21 +375,7 @@ class Client
         ::EM.connect( @host, @port, Handler, @opts )
     end
 
-    def cleanup!
-        # cnt = 0
-        # ObjectSpace.each_object( Arachni::RPC::Client::Handler ) {
-            # |obj|
-            # if [ :active, :pending ].include?( obj.status ) && obj.callbacks.empty?
-                # obj.close_connection
-                # cnt += 1
-            # end
-        # }
-        # return cnt
-    end
-
     def call_async( req, &block )
-
-        callback = nil
 
         if !keep_alive?
             @conn = connect
@@ -402,7 +388,6 @@ class Client
 
         ::EM.schedule {
             @conn.set_callback_and_send( req )
-            cleanup! if !keep_alive?
         }
     end
 
