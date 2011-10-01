@@ -148,19 +148,30 @@ class Client
         # @param    [Hash]    res   server response object ({Response})
         #
         def receive_object( res )
+
             if exception?( res )
                 res['obj'] = exception( res['obj'] )
             end
 
             if cb = get_callback( res )
 
+                if !@opts[:keep_alive]
+                    callback = Proc.new {
+                        |obj|
+                        close_connection
+                        cb.call( obj )
+                    }
+                else
+                    callback = cb
+                end
+
                 if defer?( res['callback_id'] )
                     # the callback might block a bit so tell EM to put it in a thread
                     ::EM.defer {
-                        cb.call( res['obj'] )
+                        callback.call( res['obj'] )
                     }
                 else
-                    cb.call( res['obj'] )
+                    callback.call( res['obj'] )
                 end
             end
         end
@@ -186,6 +197,8 @@ class Client
         # @param    [Arachni::RPC::Request]      req     request
         #
         def set_callback_and_send( req )
+            @status = :pending
+
             req_h = req.prepare_for_tx
 
             cb_id = set_callback( req_h, req.callback, !req.defer? )
@@ -363,15 +376,15 @@ class Client
     end
 
     def cleanup!
-        cnt = 0
-        ObjectSpace.each_object( Arachni::RPC::Client::Handler ) {
-            |obj|
-            if obj.status == :active && obj.callbacks.empty?
-                obj.close_connection
-                cnt += 1
-            end
-        }
-        return cnt
+        # cnt = 0
+        # ObjectSpace.each_object( Arachni::RPC::Client::Handler ) {
+            # |obj|
+            # if [ :active, :pending ].include?( obj.status ) && obj.callbacks.empty?
+                # obj.close_connection
+                # cnt += 1
+            # end
+        # }
+        # return cnt
     end
 
     def call_async( req, &block )
