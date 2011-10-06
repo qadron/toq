@@ -70,12 +70,12 @@ module Protocol
     end
 
     #
-    # Sends a response to the client.
+    # Sends a message to the peer.
     #
-    # @param    [Arachni::RPC::Response]    res
+    # @param    [Arachni::RPC::Message]    msg
     #
-    def send_message( res )
-        send_object( res.prepare_for_tx )
+    def send_message( msg )
+        send_object( msg.prepare_for_tx )
     end
     alias :send_request  :send_message
     alias :send_response :send_message
