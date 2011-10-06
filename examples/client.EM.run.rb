@@ -26,6 +26,8 @@ require File.join( File.expand_path( File.dirname( __FILE__ ) ), '../lib/arachni
         # set on the server-side you'll be getting exceptions.
         :token => 'superdupersecret',
 
+        # :keep_alive => false,
+
         # optional serializer (defaults to YAML)
         # see the 'serializer' method at:
         # http://eventmachine.rubyforge.org/EventMachine/Protocols/ObjectProtocol.html#M000369

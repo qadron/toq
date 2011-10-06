@@ -8,6 +8,8 @@
 
 =end
 
+require 'ap'
+
 require File.join( File.expand_path( File.dirname( __FILE__ ) ), '../', 'rpc' )
 
 module Arachni
@@ -46,17 +48,28 @@ class Server
     #
     class Proxy < EventMachine::Connection
 
-        include ::EM::P::ObjectProtocol
+        include ::Arachni::RPC::Protocol
         include ::Arachni::RPC::Exceptions
-        include ::Arachni::RPC::SSL
-
         include ::Arachni::RPC::ConnectionUtilities
+
+        INACTIVITY_TIMEOUT = 10
+
+        attr_reader :request
 
         def initialize( server )
             super
             @server = server
             @opts   = server.opts
             @server.proxy = self
+
+            assume_server_role!
+
+            @id = nil
+            @request = nil
+
+            # do not tolerate long periods of
+            # inactivity in order to avoid zombie connections
+            set_comm_inactivity_timeout( INACTIVITY_TIMEOUT )
         end
 
         # starts TLS
@@ -66,6 +79,25 @@ class Server
 
         def unbind
             end_ssl
+
+            # if @id
+                # ap 'unbind:'
+                # ap Time.new.strftime( '%M:%S.%N' )
+                # ap @id
+                # puts "Error: #{error?}"
+                # ap '------------------'
+            # end
+
+        end
+
+        def connection_completed
+            # if @id
+                # ap 'completed:'
+                # ap Time.new.strftime( '%M:%S.%N' )
+                # ap @id
+                # puts "Error: #{error?}"
+                # ap '------------------'
+            # end
         end
 
         def log( severity, progname, msg )
@@ -76,22 +108,27 @@ class Server
         #
         # Handles requests and sends back the responses.
         #
-        # @param    [Hash]      req     request hash ( {Arachni::RPC::Request} )
+        # @param    [Arachni::RPC::Request]     req
         #
-        def receive_object( req )
+        def receive_request( req )
+            @request = req
 
             # the method call may block a little so tell EventMachine to
             # stick it in its own thread.
             ::EM.defer( proc {
-                res  = Response.new( :callback_id => req['callback_id'] )
+                res  = Response.new
                 peer = peer_ip_addr
 
                 begin
                     # token-based authentication
-                    authenticate!( peer, req )
+                    authenticate!
 
                     # grab the result of the method call
-                    res.merge!( @server.call( peer, req ) )
+                    res.merge!( @server.call( self ) )
+
+                    if @request.message.include?( 'auditstore' )
+                        @id = @request.object_id
+                    end
 
                 # handle exceptions and convert them to a simple hash,
                 # ready to be passed to the client.
@@ -127,9 +164,22 @@ class Server
                 # along with the callback ID but *only* if it wan't async
                 # because server.call() will have already taken care of it
                 #
-                send_object( res.prepare_for_tx ) if !res.async?
+                send_response( res ) if !res.async?
             })
         end
+
+        # def send_data( *args )
+            # r = super( *args )
+            # if @id
+                # ap 'send_data:'
+                # # ap Time.new.strftime( '%M:%S.%N' )
+                # # ap "Ret: #{r}"
+                # ap "Size: #{args.to_yaml.bytesize}"
+                # # ap '~~~~~~~~~~~~~~~'
+                # # ap "Error: #{error?}"
+                # ap '---------------'
+            # end
+        # end
 
         #
         # Authenticates the client based on the token in the request.
@@ -139,11 +189,16 @@ class Server
         # @param    [String]    peer    IP address of the client
         # @param    [Hash]      req     request
         #
-        def authenticate!( peer, req )
-            if !valid_token?( req['token'] )
+        def authenticate!
+            if !valid_token?( @request.token )
+
                 msg = 'Token missing or invalid while calling: ' +
                     req['message']
-                @server.logger.error( 'Authenticator' ){ msg + " [on behalf of #{peer}]" }
+
+                @server.logger.error( 'Authenticator' ){
+                    msg + " [on behalf of #{peer_ip_addr}]"
+                }
+
                 raise( InvalidToken.new( msg ) )
             end
         end
@@ -156,8 +211,7 @@ class Server
         # @return   [Bool]
         #
         def valid_token?( token )
-            return true if token == @server.token
-            return false
+            token == @server.token
         end
 
         #
@@ -300,9 +354,12 @@ class Server
         ::EM.start_server( @host, @port, Proxy, self )
     end
 
-    def call( peer_ip_addr, req )
+    def call( connection )
 
-        expr, args = req['message'], req['args']
+        req = connection.request
+        peer_ip_addr = connection.peer_ip_addr
+
+        expr, args = req.message, req.args
         meth_name, obj_name = parse_expr( expr )
 
         log_call( peer_ip_addr, expr, *args )
@@ -322,21 +379,15 @@ class Server
         # the proxy needs to know wether this is an async call because if it
         # is we'll have already send the response.
         res = Response.new
-        res.async! if is_async?( obj_name, meth_name )
+        res.async! if async?( obj_name, meth_name )
 
         if !res.async?
             res.obj = @objects[obj_name].send( meth_name.to_sym, *args )
         else
             @objects[obj_name].send( meth_name.to_sym, *args ){
                 |obj|
-
-                @proxy.send_object(
-                    Request.new(
-                        :obj => obj,
-                        :callback_id => req['callback_id']
-                    ).prepare_for_tx
-                )
-
+                res.obj = obj
+                connection.send_response( res )
             }
         end
 
@@ -365,7 +416,7 @@ class Server
 
     private
 
-    def is_async?( objname, method )
+    def async?( objname, method )
         @async_methods[objname].include?( method )
     end
 

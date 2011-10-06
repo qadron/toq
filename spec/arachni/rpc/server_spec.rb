@@ -1,7 +1,7 @@
 require File.join( File.expand_path( File.dirname( __FILE__ ) ), '../../', 'spec_helper' )
 
 class Arachni::RPC::Server
-    public :is_async?, :async_check, :object_exist?, :public_method?
+    public :async?, :async_check, :object_exist?, :public_method?
     attr_accessor :proxy
 end
 
@@ -31,14 +31,14 @@ describe Arachni::RPC::Server do
         it { should == true }
     end
 
-    describe "#is_async?" do
+    describe "#async?" do
 
         it "should return true for async methods" do
-            @server.is_async?( 'test', 'async_foo' ).should be_true
+            @server.async?( 'test', 'async_foo' ).should be_true
         end
 
         it "should return false for sync methods" do
-            @server.is_async?( 'test', 'foo' ).should be_false
+            @server.async?( 'test', 'foo' ).should be_false
         end
     end
 

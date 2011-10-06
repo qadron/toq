@@ -24,14 +24,6 @@ module RPC
 class Message
 
     #
-    # Unique identifier for the callback.
-    #
-    # @return   [String]
-    #
-    attr_accessor :callback_id
-
-
-    #
     # @param    [Hash]   opts   sets instance attributes
     #
     def initialize( opts = {} )

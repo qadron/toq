@@ -84,6 +84,7 @@ end
 
         if !::EM::reactor_running?
             q = Queue.new
+
             Thread.new do
                 ::EM::run do
 

@@ -13,7 +13,6 @@ def rpc_opts
         :host  => 'localhost',
         :port  => 7331,
         :token => 'superdupersecret',
-        :keep_alive => true,
         :serializer => Marshal,
     }
 end

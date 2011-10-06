@@ -53,7 +53,7 @@ describe Arachni::RPC::Client do
 
                     start_client( rpc_opts ).call( 'test.foo', @arg ) {
                         |res|
-                        @arg.should == res
+                        res.should == @arg
                         ::EM.stop
                     }
 
@@ -65,16 +65,16 @@ describe Arachni::RPC::Client do
 
     describe "Arachni::RPC::Client::Mapper interface" do
         it "should be able to properly forward synchronous calls" do
-                test = Arachni::RPC::Client::Mapper.new( start_client( rpc_opts ), 'test' )
-                @arg.should == test.foo( @arg )
-                ::EM.stop
+            test = Arachni::RPC::Client::Mapper.new( start_client( rpc_opts ), 'test' )
+            test.foo( @arg ).should == @arg
+            # ::EM.stop
         end
 
         it "should be able to properly forward synchronous calls" do
             test = Arachni::RPC::Client::Mapper.new( start_client( rpc_opts ), 'test' )
             test.foo( @arg ) {
                 |res|
-                @arg.should == res
+                res.should == @arg
                 ::EM.stop
             }
             Arachni::RPC::EM.block!
@@ -146,7 +146,7 @@ describe Arachni::RPC::Client do
     it "should be able to retain stability and consistency under heavy load" do
         client = start_client( rpc_opts )
 
-        n    = 10000
+        n    = 1000
         cnt  = 0
 
         mismatches = []

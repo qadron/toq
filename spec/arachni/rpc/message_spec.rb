@@ -13,7 +13,7 @@ end
 describe Arachni::RPC::Message do
 
     before( :all ) do
-        @opts = { :foo => 'foo val', :boo => 'boo val', :callback_id => 1 }
+        @opts = { :foo => 'foo val', :boo => 'boo val' }
         @msg = MyMessage.new( @opts )
     end
 
@@ -22,9 +22,8 @@ describe Arachni::RPC::Message do
             i = 0
             i += 1 if ( @msg.foo == @opts[:foo] )
             i += 1 if ( @msg.boo == @opts[:boo] )
-            i += 1 if ( @msg.callback_id == @opts[:callback_id] )
 
-            i.should == 3
+            i.should == 2
         end
     end
 
@@ -40,9 +39,8 @@ describe Arachni::RPC::Message do
             i = 0
             i += 1 if ( msg.foo == opts[:foo] )
             i += 1 if ( msg.boo == @opts[:boo] )
-            i += 1 if ( msg.callback_id == opts[:callback_id] )
 
-            i.should == 3
+            i.should == 2
         end
     end
 

@@ -74,7 +74,6 @@ class Request < Message
     # @see Message#initialize
     def initialize( * )
         super
-        @defer = true
     end
 
     def do_not_defer!
@@ -82,7 +81,7 @@ class Request < Message
     end
 
     def defer?
-        @defer
+        @defer.nil? ? true : @defer
     end
 
     private
