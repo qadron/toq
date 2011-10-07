@@ -117,14 +117,14 @@ class Client
         end
 
         def unbind
-            # if @id
-                # ap 'unbind:'
-                # ap Time.new.strftime( '%M:%S.%N' )
-                # ap status
-                # ap @request
-                # puts "Error: #{error?}"
-                # ap '------------------'
-            # end
+            if @id
+                ap 'unbind:'
+                ap Time.new.strftime( '%M:%S.%N' )
+                ap status
+                ap @request
+                puts "Error: #{error?}"
+                ap '------------------'
+            end
 
             end_ssl
 
@@ -139,13 +139,13 @@ class Client
         def connection_completed
             @status = :established
 
-            # if @id
-                # ap 'completed:'
-                # ap Time.new.strftime( '%M:%S.%N' )
-                # ap @request
-                # puts "Error: #{error?}"
-                # ap '------------------'
-            # end
+            if @id
+                ap 'completed:'
+                ap Time.new.strftime( '%M:%S.%N' )
+                ap @request
+                puts "Error: #{error?}"
+                ap '------------------'
+            end
         end
 
         def status
@@ -159,12 +159,12 @@ class Client
         #
         def receive_response( res )
 
-            # if @id
-                # ap 'receive_object:'
-                # ap Time.new.strftime( '%M:%S.%N' )
-                # # ap res
-                # ap '---------------'
-            # end
+            if @id
+                ap 'receive_object:'
+                ap Time.new.strftime( '%M:%S.%N' )
+                # ap res
+                ap '---------------'
+            end
 
             if exception?( res )
                 res.obj = exception( res.obj )
@@ -216,13 +216,13 @@ class Client
 
             @request = req
 
-            # if req.message.include?( 'auditstore' )
-                # ap 'set_callback_and_send:'
-                # ap Time.new.strftime( '%M:%S.%N' )
-                # ap @request
-                # @id = @request.object_id
-                # ap '--------------------'
-            # end
+            if req.message.include?( 'auditstore' )
+                ap 'set_callback_and_send:'
+                ap Time.new.strftime( '%M:%S.%N' )
+                ap @request
+                @id = @request.object_id
+                ap '--------------------'
+            end
 
             super( req )
         end
@@ -333,9 +333,8 @@ class Client
     end
 
     def call_async( req, &block )
-        req.callback = block if block_given?
-
         ::EM.schedule {
+            req.callback = block if block_given?
             connect.send_request( req )
         }
     end
