@@ -60,7 +60,6 @@ class Server
             super
             @server = server
             @opts   = server.opts
-            @server.proxy = self
 
             assume_server_role!
 
@@ -80,24 +79,24 @@ class Server
         def unbind
             end_ssl
 
-            # if @id
-                # ap 'unbind:'
-                # ap Time.new.strftime( '%M:%S.%N' )
-                # ap @id
-                # puts "Error: #{error?}"
-                # ap '------------------'
-            # end
+            if @id
+                ap 'unbind:'
+                ap Time.new.strftime( '%M:%S.%N' )
+                ap @id
+                puts "Error: #{error?}"
+                ap '------------------'
+            end
 
         end
 
         def connection_completed
-            # if @id
-                # ap 'completed:'
-                # ap Time.new.strftime( '%M:%S.%N' )
-                # ap @id
-                # puts "Error: #{error?}"
-                # ap '------------------'
-            # end
+            if @id
+                ap 'completed:'
+                ap Time.new.strftime( '%M:%S.%N' )
+                ap @id
+                puts "Error: #{error?}"
+                ap '------------------'
+            end
         end
 
         def log( severity, progname, msg )
@@ -115,7 +114,7 @@ class Server
 
             # the method call may block a little so tell EventMachine to
             # stick it in its own thread.
-            ::EM.defer( proc {
+            # ::EM.defer( proc {
                 res  = Response.new
                 peer = peer_ip_addr
 
@@ -126,6 +125,7 @@ class Server
                     # grab the result of the method call
                     res.merge!( @server.call( self ) )
 
+                    # debugging
                     if @request.message.include?( 'auditstore' )
                         @id = @request.object_id
                     end
@@ -155,9 +155,9 @@ class Server
                     @server.logger.error( 'Exception' ){ msg + " [on behalf of #{peer}]" }
                 end
 
-                res
-            }, proc {
-                |res|
+                # res
+            # }, proc {
+                # |res|
 
                 #
                 # pass the result of the RPC call back to the client
@@ -165,21 +165,8 @@ class Server
                 # because server.call() will have already taken care of it
                 #
                 send_response( res ) if !res.async?
-            })
+            # })
         end
-
-        # def send_data( *args )
-            # r = super( *args )
-            # if @id
-                # ap 'send_data:'
-                # # ap Time.new.strftime( '%M:%S.%N' )
-                # # ap "Ret: #{r}"
-                # ap "Size: #{args.to_yaml.bytesize}"
-                # # ap '~~~~~~~~~~~~~~~'
-                # # ap "Error: #{error?}"
-                # ap '---------------'
-            # end
-        # end
 
         #
         # Authenticates the client based on the token in the request.
@@ -232,7 +219,6 @@ class Server
     attr_reader :token
     attr_reader :opts
     attr_reader :logger
-    attr_writer :proxy
 
     #
     # Starts EventMachine and the RPC server.
