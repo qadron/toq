@@ -75,7 +75,9 @@ module Protocol
     # @param    [Arachni::RPC::Message]    msg
     #
     def send_message( msg )
-        send_object( msg.prepare_for_tx )
+        ::EM.schedule {
+            send_object( msg.prepare_for_tx )
+        }
     end
     alias :send_request  :send_message
     alias :send_response :send_message
