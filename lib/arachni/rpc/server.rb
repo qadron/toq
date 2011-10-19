@@ -20,7 +20,7 @@ module RPC
 #
 # It's capable of:
 # - performing and handling a few thousands requests per second (depending on call size, network conditions and the like)
-# - TLS encrytion
+# - TLS encryption
 # - asynchronous and synchronous requests
 # - handling asynchronous methods that require a block
 #
@@ -78,25 +78,6 @@ class Server
 
         def unbind
             end_ssl
-
-            if @id
-                ap 'unbind:'
-                ap Time.new.strftime( '%M:%S.%N' )
-                ap @id
-                puts "Error: #{error?}"
-                ap '------------------'
-            end
-
-        end
-
-        def connection_completed
-            if @id
-                ap 'completed:'
-                ap Time.new.strftime( '%M:%S.%N' )
-                ap @id
-                puts "Error: #{error?}"
-                ap '------------------'
-            end
         end
 
         def log( severity, progname, msg )
@@ -124,11 +105,6 @@ class Server
 
                     # grab the result of the method call
                     res.merge!( @server.call( self ) )
-
-                    # debugging
-                    if @request.message.include?( 'auditstore' )
-                        @id = @request.object_id
-                    end
 
                 # handle exceptions and convert them to a simple hash,
                 # ready to be passed to the client.
@@ -202,7 +178,7 @@ class Server
         end
 
         #
-        # Returns the prefered serializer based on the 'serializer' option of the server.
+        # Returns the preferred serializer based on the 'serializer' option of the server.
         #
         # Defaults to <i>YAML</i>.
         #
@@ -268,7 +244,7 @@ class Server
     # This is a way to identify methods that pass their result to a block
     # instead of simply returning them (which is the most usual operation of async methods.
     #
-    # So no need to change your coding convetions to fit the RPC stuff,
+    # So no need to change your coding conventions to fit the RPC stuff,
     # you can just decide dynamically based on the plethora of data which Ruby provides
     # by its 'Method' class.
     #
@@ -362,7 +338,7 @@ class Server
             raise( InvalidMethod.new( msg ) )
         end
 
-        # the proxy needs to know wether this is an async call because if it
+        # the proxy needs to know whether this is an async call because if it
         # is we'll have already send the response.
         res = Response.new
         res.async! if async?( obj_name, meth_name )

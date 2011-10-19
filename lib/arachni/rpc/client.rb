@@ -20,7 +20,7 @@ module RPC
 #
 # It's capable of:
 # - performing and handling a few thousands requests per second (depending on call size, network conditions and the like)
-# - TLS encrytion
+# - TLS encryption
 # - asynchronous and synchronous requests
 # - handling remote asynchronous calls that require a block
 #
@@ -105,9 +105,7 @@ class Client
             @opts = opts
             @status = :idle
 
-            @id = nil
             @request = nil
-
             assume_client_role!
         end
 
@@ -117,15 +115,6 @@ class Client
         end
 
         def unbind
-            if @id
-                ap 'unbind:'
-                ap Time.new.strftime( '%M:%S.%N' )
-                ap status
-                ap @request
-                puts "Error: #{error?}"
-                ap '------------------'
-            end
-
             end_ssl
 
             if @request && @request.callback && @status != :done
@@ -138,14 +127,6 @@ class Client
 
         def connection_completed
             @status = :established
-
-            if @id
-                ap 'completed:'
-                ap Time.new.strftime( '%M:%S.%N' )
-                ap @request
-                puts "Error: #{error?}"
-                ap '------------------'
-            end
         end
 
         def status
@@ -158,13 +139,6 @@ class Client
         # @param    [Arachni::RPC::Response]    res
         #
         def receive_response( res )
-
-            if @id
-                ap 'receive_object:'
-                ap Time.new.strftime( '%M:%S.%N' )
-                # ap res
-                ap '---------------'
-            end
 
             if exception?( res )
                 res.obj = exception( res.obj )
@@ -213,17 +187,7 @@ class Client
         #
         def send_request( req )
             @status = :pending
-
             @request = req
-
-            if req.message.include?( 'auditstore' )
-                ap 'set_callback_and_send:'
-                ap Time.new.strftime( '%M:%S.%N' )
-                ap @request
-                @id = @request.object_id
-                ap '--------------------'
-            end
-
             super( req )
         end
 
