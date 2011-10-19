@@ -84,7 +84,7 @@ module Exceptions
     end
 
     #
-    # Signifies an exception that occured on the server-side.
+    # Signifies an exception that occurred on the server-side.
     #
     # Look errors on the remote method and review the server output for more details.
     #

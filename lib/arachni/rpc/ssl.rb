@@ -1,10 +1,10 @@
 =begin
-Arachni-RPC
-Copyright (c) 2011 Tasos "Zapotek" Laskos <tasos.laskos@gmail.com>
+                  Arachni-RPC
+  Copyright (c) 2011 Tasos "Zapotek" Laskos <tasos.laskos@gmail.com>
 
-This is free software; you can copy and distribute and modify
-this program under the term of the GPL v2.0 License
-(See LICENSE file for details)
+  This is free software; you can copy and distribute and modify
+  this program under the term of the GPL v2.0 License
+  (See LICENSE file for details)
 
 =end
 
@@ -128,7 +128,7 @@ module SSL
         if ca_store.verify( cert )
             @last_seen_cert = cert
 
-            # A server may send the root certifiacte, which we already have and thus
+            # A server may send the root certificate, which we already have and thus
             # should not be added to the store again.
             ca_store.add_cert( @last_seen_cert ) if !@last_seen_cert.root?
 

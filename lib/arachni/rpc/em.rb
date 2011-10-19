@@ -15,7 +15,7 @@ module Arachni
 module RPC
 
 #
-# Provides some convinient methods for EventMachine's Reactor.
+# Provides some convenient methods for EventMachine's Reactor.
 #
 # @author: Tasos "Zapotek" Laskos
 #                                      <tasos.laskos@gmail.com>

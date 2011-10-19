@@ -7,8 +7,6 @@
   (See LICENSE file for details)
 
 =end
-require 'ap'
-
 
 require File.join( File.expand_path( File.dirname( __FILE__ ) ), '../', 'rpc' )
 
