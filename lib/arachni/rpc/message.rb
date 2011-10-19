@@ -49,7 +49,7 @@ class Message
     end
 
     #
-    # Prepares the message for transmition (i.e. converts the message to a Hash).
+    # Prepares the message for transmission (i.e. converts the message to a Hash).
     #
     # Attributes that should not be included can be skipped by implementing
     # {#transmit?} and returning the appropriate value.

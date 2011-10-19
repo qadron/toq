@@ -40,7 +40,7 @@ It is under development and will ultimately provide the basis for <a href="http:
 It's capable of:
 
  - performing and handling a few thousand requests per second (depending on call size, network conditions and the like)
- - TLS encrytion (with peer verification)
+ - TLS encryption (with peer verification)
  - asynchronous and synchronous requests
  - handling server-side asynchronous calls that require a block (or any method that requires a block in general)
  - token-based authentication
