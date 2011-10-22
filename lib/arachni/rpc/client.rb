@@ -112,11 +112,11 @@ class Client
             start_ssl
         end
 
-        def unbind
+        def unbind( reason )
             end_ssl
 
             if @request && @request.callback && @status != :done
-                e = Arachni::RPC::Exceptions::ConnectionError.new( 'Connection closed' )
+                e = Arachni::RPC::Exceptions::ConnectionError.new( "Connection closed [#{reason}]" )
                 @request.callback.call( e )
             end
 
