@@ -154,7 +154,7 @@ class Server
             if !valid_token?( @request.token )
 
                 msg = 'Token missing or invalid while calling: ' +
-                    req['message']
+                    @req['message']
 
                 @server.logger.error( 'Authenticator' ){
                     msg + " [on behalf of #{peer_ip_addr}]"
