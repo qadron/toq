@@ -9,11 +9,15 @@
 =end
 
 require 'rubygems'
-require 'rspec'
-require 'rspec/core/rake_task'
 
-RSpec::Core::RakeTask.new do |t|
-  t.rspec_opts = ['--options', "\"#{File.dirname(__FILE__)}/spec/spec.opts\""]
+begin
+    require 'rspec'
+    require 'rspec/core/rake_task'
+
+    RSpec::Core::RakeTask.new do |t|
+      t.rspec_opts = ['--options', "\"#{File.dirname(__FILE__)}/spec/spec.opts\""]
+    end
+rescue
 end
 
 desc "Generate docs"

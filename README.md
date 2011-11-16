@@ -32,25 +32,26 @@
 
 ## Synopsis
 
-Arachni-RPC is a simple and lightweight EventMachine based RPC client and server implementation. <br/>
-It is under development and will ultimately provide the basis for <a href="http://arachni.segfault.gr">Arachni</a>'s Grid infrastructure.
+Arachni-RPC is a simple and lightweight Remote Procedure Call protocol currently under development
+which will ultimately provide the basis for <a href="http://arachni.segfault.gr">Arachni</a>'s Grid infrastructure.
+
+This repository holds *only* the protocol specification although there currently are 2 (more like 1.5) available implementations of the protocol:
+
+ - Arachni-RPC EM -- Uses EventMachine for network related operations and provides both a client and a server, this is the one used by Arachni.
+ - Arachni-RPC Client Pure -- Provides a synchronous client using pure Ruby OpenSSL sockets and has no 3rd party dependencies.
 
 ## Features
 
-It's capable of:
+It is:
 
- - performing and handling a few thousand requests per second (depending on call size, network conditions and the like)
- - TLS encryption (with peer verification)
- - asynchronous and synchronous requests
- - handling server-side asynchronous calls that require a block (or any method that requires a block in general)
- - token-based authentication
-
-## Usage
-
-Check out the files in the <i>examples/</i> directory, they go through everything in great detail.<br/>
-The tests under <i>spec/arachni/rpc/</i> cover everything too so they can probably help you out.
+ - extremely lightweight
+ - very simple design
+ - provides token-based authentication
 
 ## Installation
+
+I can't think of a lot of uses for manually installing the protocol specification
+(it'll most likely be installed as a dependency for some other project) but in case you want to some instructions follow.
 
 ### Gem
 
@@ -67,10 +68,8 @@ If you want to clone the repository and work with the source code:
 
 ## Running the Specs
 
-In order to run the specs you must first fire up 2 sample servers like so:
-
-    ruby spec/servers/basic.rb
-    ruby spec/servers/with_ssl_primitives.rb
+In order to run the specs you must first install RSpec:
+    gem install rspec
 
 Then:
 

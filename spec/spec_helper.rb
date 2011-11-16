@@ -5,8 +5,7 @@ def cwd
     File.expand_path( File.dirname( __FILE__ ) )
 end
 
-require File.join( cwd, '../lib/arachni/', 'rpc' )
-require File.join( cwd, 'servers', 'server' )
+require File.join( cwd, '../lib/arachni', 'rpc' )
 
 def rpc_opts
     {
@@ -31,9 +30,4 @@ def rpc_opts_with_invalid_ssl_primitives
         :ssl_pkey   => cwd + '/pems/client/foo-key.pem',
         :ssl_cert   => cwd + '/pems/client/foo-cert.pem'
     )
-end
-
-
-def start_client( opts )
-    Arachni::RPC::Client.new( opts )
 end

@@ -8,10 +8,7 @@
 
 =end
 
-require 'eventmachine'
-require 'socket'
 require 'set'
-require 'logger'
 require 'yaml'
 
 require File.join( File.expand_path( File.dirname( __FILE__ ) ), 'rpc', 'version' )
@@ -19,10 +16,5 @@ require File.join( File.expand_path( File.dirname( __FILE__ ) ), 'rpc', 'excepti
 require File.join( File.expand_path( File.dirname( __FILE__ ) ), 'rpc', 'message' )
 require File.join( File.expand_path( File.dirname( __FILE__ ) ), 'rpc', 'request' )
 require File.join( File.expand_path( File.dirname( __FILE__ ) ), 'rpc', 'response' )
-require File.join( File.expand_path( File.dirname( __FILE__ ) ), 'rpc', 'connection_utilities' )
-require File.join( File.expand_path( File.dirname( __FILE__ ) ), 'rpc', 'protocol' )
-require File.join( File.expand_path( File.dirname( __FILE__ ) ), 'rpc', 'server' )
-require File.join( File.expand_path( File.dirname( __FILE__ ) ), 'rpc', 'client' )
-require File.join( File.expand_path( File.dirname( __FILE__ ) ), 'rpc', 'em' )
-require 'yaml'
+require File.join( File.expand_path( File.dirname( __FILE__ ) ), 'rpc', 'remote_object_mapper' )
 

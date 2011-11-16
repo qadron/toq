@@ -14,22 +14,16 @@ Gem::Specification.new do |s|
       s.name              = "arachni-rpc"
       s.version           = Arachni::RPC::VERSION
       s.date              = Time.now.strftime('%Y-%m-%d')
-      s.summary           = "The RPC client and server used by the Arachni WebAppSec scanner."
+      s.summary           = "The RPC protocol specification of the Arachni WebAppSec scanner."
       s.homepage          = "https://github.com/Arachni/arachni-rpc"
       s.email             = "tasos.laskos@gmail.com"
       s.authors           = [ "Tasos Laskos" ]
 
       s.files             = %w( README.md Rakefile LICENSE.md CHANGELOG.md )
       s.files            += Dir.glob("lib/**/**")
-      s.files            += Dir.glob("examples/**/**")
-      s.test_files        = Dir.glob("examples/**/**")
-      s.test_files       += Dir.glob("spec/**/**")
 
       s.extra_rdoc_files  = %w( README.md LICENSE.md CHANGELOG.md )
       s.rdoc_options      = ["--charset=UTF-8"]
-
-      s.add_dependency "eventmachine",  "~> 1.0.0.beta.4"
-      s.add_dependency "em-synchrony",  "~> 1.0.0"
 
       s.description = <<description
         EventMachine based RPC client and server capable of a few thousands requests per second (depending on call size, network conditions and the like).
