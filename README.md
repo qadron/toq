@@ -38,7 +38,7 @@ which will ultimately provide the basis for <a href="http://arachni.segfault.gr"
 This repository holds *only* the protocol specification although there currently are 2 (more like 1.5) available implementations of the protocol:
 
  - Arachni-RPC EM -- Uses EventMachine for network related operations and provides both a client and a server, this is the one used by Arachni.
- - Arachni-RPC Client Pure -- Provides a synchronous client using pure Ruby OpenSSL sockets and has no 3rd party dependencies.
+ - Arachni-RPC Pure -- Provides a synchronous client using pure Ruby OpenSSL sockets and has no 3rd party dependencies.
 
 ## Features
 
