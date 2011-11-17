@@ -59,6 +59,21 @@ module Arachni
 module RPC
 module Exceptions
 
+    #
+    # Returns an exception based on the response object.
+    #
+    # @param    [Arachni::RPC::Response]    response
+    #
+    # @return   [Exception]
+    #
+    def self.from_response( response )
+        obj = response.obj
+        klass = Arachni::RPC::Exceptions.const_get( obj['type'].to_sym )
+        e = klass.new( obj['exception'] )
+        e.set_backtrace( obj['backtrace'] )
+        return e
+    end
+
     class Base < ::Exception
         #
         # @return   [Bool]  true
