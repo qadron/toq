@@ -26,7 +26,7 @@ Gem::Specification.new do |s|
       s.rdoc_options      = ["--charset=UTF-8"]
 
       s.description = <<description
-        EventMachine based RPC client and server capable of a few thousands requests per second (depending on call size, network conditions and the like).
-        It supports TLS encrytion, asynchronous and synchronous requests and is capable of handling remote asynchronous calls that require a block.
+        Arachni-RPC is a simple and lightweight Remote Procedure Call protocol currently
+        under development which will ultimately provide the basis for Arachni's Grid infrastructure.
 description
 end
