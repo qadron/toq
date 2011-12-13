@@ -54,7 +54,7 @@ I can't think of a lot of uses for manually installing the protocol specificatio
 
 ### Gem
 
-The Gem hasn't been pushed yet, the system is still under development.
+```gem install arachni-rpc```
 
 ### Source
 
