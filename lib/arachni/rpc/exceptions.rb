@@ -158,6 +158,21 @@ module Exceptions
         end
 
     end
+
+    #
+    # Signifies an authentication token mismatch between the client and the server.
+    #
+    class SSLPeerVerificationFailed  < ConnectionError
+
+        #
+        # @return   [Bool]  true
+        #
+        def rpc_ssl_error?
+            true
+        end
+
+    end
+
 end
 end
 end
