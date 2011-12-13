@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
       s.name              = "arachni-rpc"
       s.version           = Arachni::RPC::VERSION
       s.date              = Time.now.strftime('%Y-%m-%d')
-      s.summary           = "The RPC protocol specification of the Arachni WebAppSec scanner."
+      s.summary           = "The RPC protocol specification of the Arachni WebAppSec scanner Grid."
       s.homepage          = "https://github.com/Arachni/arachni-rpc"
       s.email             = "tasos.laskos@gmail.com"
       s.authors           = [ "Tasos Laskos" ]
@@ -26,7 +26,7 @@ Gem::Specification.new do |s|
       s.rdoc_options      = ["--charset=UTF-8"]
 
       s.description = <<description
-        Arachni-RPC is a simple and lightweight Remote Procedure Call protocol currently
-        under development which will ultimately provide the basis for Arachni's Grid infrastructure.
+        Arachni-RPC is a simple and lightweight Remote Procedure Call protocol
+        used to provide the basis for Arachni's Grid infrastructure.
 description
 end
