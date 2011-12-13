@@ -74,6 +74,10 @@ Then:
 
     rake spec
 
+## Protocol specifications
+
+You can find that information in the [Wiki](https://github.com/Arachni/arachni-rpc/wiki).
+
 ## Bug reports/Feature requests
 Please send your feedback using Github's issue system at
 [http://github.com/arachni/arachni-rpc/issues](http://github.com/arachni/arachni-rpc/issues).
