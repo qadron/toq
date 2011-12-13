@@ -32,10 +32,9 @@
 
 ## Synopsis
 
-Arachni-RPC is a simple and lightweight Remote Procedure Call protocol currently under development
-which will ultimately provide the basis for <a href="http://arachni.segfault.gr">Arachni</a>'s Grid infrastructure.
+Arachni-RPC is a simple and lightweight Remote Procedure Call protocol which provides the basis for <a href="http://arachni.segfault.gr">Arachni</a>'s Grid infrastructure.
 
-This repository holds *only* the protocol specification although there currently are 2 (more like 1.5) available implementations of the protocol:
+This repository holds *only* the protocol specification although there currently are 2 (more like 1.5) available implementations:
 
  - <a href="http://github.com/Arachni/arachni-rpc-em">Arachni-RPC EM</a> -- Uses EventMachine for network related operations and provides both a client and a server, this is the one used by Arachni.
  - <a href="http://github.com/Arachni/arachni-rpc-pure">Arachni-RPC Pure</a> -- Provides a synchronous client using pure Ruby OpenSSL sockets and has no 3rd party dependencies.
