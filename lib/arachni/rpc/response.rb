@@ -24,9 +24,7 @@ module RPC
 #
 #    {
 #        # result of the RPC call
-#        'obj'       => object,
-#        # same as the one provided in the request
-#        'callback_id' => callback_id
+#        'obj'       => object
 #    }
 #
 # @author: Tasos "Zapotek" Laskos

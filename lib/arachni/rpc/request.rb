@@ -26,11 +26,7 @@ module RPC
 #    {
 #        'message'     => msg, # RPC message in the form of 'handler.method'
 #        'args'        => args, # optional array of arguments for the remote method
-#        'token'       => token, # optional authentication token,
-#
-#        # optional unique identifier for the callback
-#        # (helper field, included in the response)
-#        'callback_id' => callback_id
+#        'token'       => token, # optional authentication token
 #    }
 #
 # Any client that has SSL support and can serialize a Hash
