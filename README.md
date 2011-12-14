@@ -41,11 +41,9 @@ This repository holds *only* the protocol specification although there currently
 
 ## Features
 
-It is:
-
- - extremely lightweight
- - very simple design
- - provides token-based authentication
+ - Extremely lightweight
+ - Very simple design
+ - Token-based authentication
 
 ## Installation
 
