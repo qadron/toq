@@ -6,7 +6,7 @@
 
 =end
 
-require File.join( File.expand_path( File.dirname( __FILE__ ) ), '../', 'rpc' )
+require File.join( File.expand_path( File.dirname( __FILE__ ) ), 'message' )
 
 module Arachni
 module RPC
@@ -30,10 +30,7 @@ module RPC
 # Any client that has SSL support and can serialize a Hash
 # just like the one above can communicate with the RPC server.
 #
-# @author: Tasos "Zapotek" Laskos
-#                                      <tasos.laskos@gmail.com>
-#                                      <zapotek@segfault.gr>
-# @version: 0.1
+# @author: Tasos "Zapotek" Laskos <tasos.laskos@gmail.com>
 #
 class Request < Message
 
@@ -70,7 +67,7 @@ class Request < Message
         super
     end
 
-    def do_not_defer!
+    def do_not_defer
         @defer = false
     end
 
@@ -81,10 +78,7 @@ class Request < Message
     private
 
     def transmit?( attr )
-        ![
-            :@defer,
-            :@callback
-        ].include?( attr )
+        ![ :@defer, :@callback ].include?( attr )
     end
 
 end

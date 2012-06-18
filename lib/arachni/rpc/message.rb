@@ -6,18 +6,13 @@
 
 =end
 
-require File.join( File.expand_path( File.dirname( __FILE__ ) ), '../', 'rpc' )
-
 module Arachni
 module RPC
 
 #
 # Represents an RPC message, serves as the basis for {Request} and {Response}.
 #
-# @author: Tasos "Zapotek" Laskos
-#                                      <tasos.laskos@gmail.com>
-#                                      <zapotek@segfault.gr>
-# @version: 0.1
+# @author: Tasos "Zapotek" Laskos <tasos.laskos@gmail.com>
 #
 class Message
 
@@ -25,10 +20,7 @@ class Message
     # @param    [Hash]   opts   sets instance attributes
     #
     def initialize( opts = {} )
-        opts.each_pair {
-            |k, v|
-            instance_variable_set( "@#{k}".to_sym, v )
-        }
+        opts.each_pair { |k, v| instance_variable_set( "@#{k}".to_sym, v ) }
     end
 
     #
@@ -39,11 +31,10 @@ class Message
     # @param    [Message]   message
     #
     def merge!( message )
-        message.instance_variables.each {
-            |var|
+        message.instance_variables.each do |var|
             val = message.instance_variable_get( var )
             instance_variable_set( var, val )
-        }
+        end
     end
 
     #
@@ -55,13 +46,10 @@ class Message
     # @return   [Hash]
     #
     def prepare_for_tx
-        hash = {}
-        instance_variables.each {
-            |k|
-            next if !transmit?( k )
-            hash[normalize( k )] = instance_variable_get( k )
-        }
-        return hash
+        instance_variables.inject({}) do |h, k|
+            h[normalize( k )] = instance_variable_get( k ) if transmit?( k )
+            h
+        end
     end
 
     #
@@ -70,7 +58,7 @@ class Message
     # @param    [Symbol]    attr    attribute symbol (i.e. :@token)
     #
     def transmit?( attr )
-        return true
+        true
     end
 
     private

@@ -19,6 +19,8 @@
 # By default they'll return false, individual RPC Exceptions will overwrite them to
 # return true when applicable.
 #
+# @author: Tasos "Zapotek" Laskos <tasos.laskos@gmail.com>
+#
 class Object
 
     # @return   [Bool]  false
@@ -69,7 +71,7 @@ module Exceptions
         klass = Arachni::RPC::Exceptions.const_get( obj['type'].to_sym )
         e = klass.new( obj['exception'] )
         e.set_backtrace( obj['backtrace'] )
-        return e
+        e
     end
 
     class Base < ::Exception

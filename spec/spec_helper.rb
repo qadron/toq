@@ -31,3 +31,8 @@ def rpc_opts_with_invalid_ssl_primitives
         :ssl_cert   => cwd + '/pems/client/foo-cert.pem'
     )
 end
+
+RSpec.configure do |config|
+    config.color = true
+    config.add_formatter :documentation
+end

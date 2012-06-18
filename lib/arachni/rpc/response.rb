@@ -6,7 +6,7 @@
 
 =end
 
-require File.join( File.expand_path( File.dirname( __FILE__ ) ), '../', 'rpc' )
+require File.join( File.expand_path( File.dirname( __FILE__ ) ), 'message' )
 
 module Arachni
 module RPC
@@ -25,10 +25,7 @@ module RPC
 #        'obj'       => object
 #    }
 #
-# @author: Tasos "Zapotek" Laskos
-#                                      <tasos.laskos@gmail.com>
-#                                      <zapotek@segfault.gr>
-# @version: 0.1
+# @author: Tasos "Zapotek" Laskos <tasos.laskos@gmail.com>
 #
 class Response < Message
 
@@ -72,9 +69,7 @@ class Response < Message
     private
 
     def transmit?( attr )
-        ![
-            :@async
-        ].include?( attr )
+        ![ :@async ].include?( attr )
     end
 
 
