@@ -33,38 +33,21 @@ task :docs do
     sh "rm -rf .yard*"
 end
 
-
-#
-# Cleans reports and logs
-#
 desc "Cleaning..."
 task :clean do
     sh "rm *.gem || true"
 end
 
-
-
-#
-# Building
-#
 desc "Build the arachni-rpc gem."
 task :build => [ :clean ] do
     sh "gem build arachni-rpc.gemspec"
 end
 
-
-#
-# Installing
-#
 desc "Build and install the arachni gem."
 task :install  => [ :build ] do
     sh "gem install arachni-rpc-#{Arachni::RPC::VERSION}.gem"
 end
 
-
-#
-# Publishing
-#
 desc "Push a new version to Gemcutter"
 task :publish => [ :build ] do
     sh "gem push arachni-rpc-#{Arachni::RPC::VERSION}.gem"
