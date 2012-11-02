@@ -50,7 +50,7 @@ end
 
 desc "Push a new version to Rubygems"
 task :publish => [ :build ] do
-    sh "git tag -a v#{Arachni::RPC::VERSION} -m 'Version #{Arachni::RPC::VERSION}"
+    sh "git tag -a v#{Arachni::RPC::VERSION} -m 'Version #{Arachni::RPC::VERSION}'"
     sh "gem push arachni-rpc-#{Arachni::RPC::VERSION}.gem"
 end
 task :release => [ :publish ]
