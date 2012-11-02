@@ -17,7 +17,7 @@ module RPC
 #
 # You start like:
 #
-#    server = Arachni::RPC::EM::Client.new( :host => 'localhost', :port => 7331 )
+#    server = Arachni::RPC::EM::Client.new( host: 'localhost', port: 7331 )
 #    bench  = Arachni::RPC::EM::Client::Mapper.new( server, 'bench' )
 #
 # And it allows you to do this:
@@ -38,7 +38,7 @@ module RPC
 #        end
 #    end
 #
-#    server = Arachni::RPC::EM::Server.new( :host => 'localhost', :port => 7331 )
+#    server = Arachni::RPC::EM::Server.new( host: 'localhost', port: 7331 )
 #    server.add_handler( 'bench', Bench.new )
 #
 # @author: Tasos "Zapotek" Laskos <tasos.laskos@gmail.com>
