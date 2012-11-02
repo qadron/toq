@@ -74,7 +74,7 @@ module Exceptions
         e
     end
 
-    class Base < ::Exception
+    class Base < ::RuntimeError
         #
         # @return   [Bool]  true
         #
