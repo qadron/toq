@@ -67,18 +67,10 @@ class Request < Message
         super
     end
 
-    def do_not_defer
-        @defer = false
-    end
-
-    def defer?
-        @defer.nil? ? true : @defer
-    end
-
     private
 
     def transmit?( attr )
-        ![ :@defer, :@callback ].include?( attr )
+        ![ :@callback ].include?( attr )
     end
 
 end
