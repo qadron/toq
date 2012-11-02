@@ -17,7 +17,7 @@ begin
 rescue
 end
 
-task default: [ :spec ]
+task default: [ :build, :spec ]
 
 desc "Generate docs"
 task :docs do
@@ -48,7 +48,9 @@ task :install  => [ :build ] do
     sh "gem install arachni-rpc-#{Arachni::RPC::VERSION}.gem"
 end
 
-desc "Push a new version to Gemcutter"
+desc "Push a new version to Rubygems"
 task :publish => [ :build ] do
+    sh "git tag -a v#{Arachni::RPC::VERSION} -m 'Version #{Arachni::RPC::VERSION}"
     sh "gem push arachni-rpc-#{Arachni::RPC::VERSION}.gem"
 end
+task :release => [ :publish ]
