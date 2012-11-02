@@ -1,3 +1,5 @@
+require File.join( File.expand_path( File.dirname( __FILE__ ) ), '../../', 'spec_helper' )
+
 describe Arachni::RPC::Request do
 
     before( :all ) do
@@ -35,22 +37,6 @@ describe Arachni::RPC::Request do
             r.callback = proc { called = true }
             r.callback.call
             called.should be_true
-        end
-    end
-
-    describe '#defer?' do
-        context 'by default' do
-            it 'should return true' do
-                r = @r.new
-                r.defer?.should be_true
-            end
-        end
-        context 'after #do_not_defer' do
-            it 'should return false' do
-                r = @r.new
-                r.do_not_defer
-                r.defer?.should be_false
-            end
         end
     end
 
