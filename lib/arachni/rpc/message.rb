@@ -9,27 +9,22 @@
 module Arachni
 module RPC
 
-#
 # Represents an RPC message, serves as the basis for {Request} and {Response}.
 #
 # @author Tasos "Zapotek" Laskos <tasos.laskos@gmail.com>
-#
 class Message
 
-    #
-    # @param    [Hash]   opts   sets instance attributes
-    #
+    # @param    [Hash]   opts
+    #   Sets instance attributes.
     def initialize( opts = {} )
-        opts.each_pair { |k, v| instance_variable_set( "@#{k}".to_sym, v ) }
+        opts.each_pair { |k, v| send( "#{k}=".to_sym, v ) }
     end
 
-    #
     # Merges the attributes of another message with self.
     #
     # (The param doesn't *really* have to be a message, any object will do.)
     #
     # @param    [Message]   message
-    #
     def merge!( message )
         message.instance_variables.each do |var|
             val = message.instance_variable_get( var )
@@ -37,14 +32,12 @@ class Message
         end
     end
 
-    #
-    # Prepares the message for transmission (i.e. converts the message to a Hash).
+    # Prepares the message for transmission (i.e. converts the message to a `Hash`).
     #
     # Attributes that should not be included can be skipped by implementing
     # {#transmit?} and returning the appropriate value.
     #
     # @return   [Hash]
-    #
     def prepare_for_tx
         instance_variables.inject({}) do |h, k|
             h[normalize( k )] = instance_variable_get( k ) if transmit?( k )
@@ -52,11 +45,10 @@ class Message
         end
     end
 
-    #
     # Decides which attributes should be skipped by {#prepare_for_tx}.
     #
-    # @param    [Symbol]    attr    attribute symbol (i.e. :@token)
-    #
+    # @param    [Symbol]    attr
+    #   Instance variable symbol (i.e. `:@token`).
     def transmit?( attr )
         true
     end
