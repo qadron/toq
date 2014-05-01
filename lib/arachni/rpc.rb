@@ -6,12 +6,9 @@
 
 =end
 
-require 'set'
+require 'arachni/reactor'
 
-require File.join( File.expand_path( File.dirname( __FILE__ ) ), 'rpc', 'version' )
-require File.join( File.expand_path( File.dirname( __FILE__ ) ), 'rpc', 'exceptions' )
-require File.join( File.expand_path( File.dirname( __FILE__ ) ), 'rpc', 'message' )
-require File.join( File.expand_path( File.dirname( __FILE__ ) ), 'rpc', 'request' )
-require File.join( File.expand_path( File.dirname( __FILE__ ) ), 'rpc', 'response' )
-require File.join( File.expand_path( File.dirname( __FILE__ ) ), 'rpc', 'remote_object_mapper' )
-
+%w(version exceptions message request response remote_object_mapper protocol
+client server).each do |f|
+    require_relative "rpc/#{f}"
+end

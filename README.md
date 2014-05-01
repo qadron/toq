@@ -1,8 +1,9 @@
 # Arachni-RPC
+
 <table>
     <tr>
         <th>Version</th>
-        <td>0.1.3</td>
+        <td>0.2.0</td>
     </tr>
     <tr>
         <th>Github page</th>
@@ -22,7 +23,7 @@
     </tr>
     <tr>
         <th>Copyright</th>
-        <td>2011-2012</td>
+        <td>2011-2014</td>
     </tr>
     <tr>
         <th>License</th>
@@ -32,44 +33,26 @@
 
 ## Synopsis
 
-Arachni-RPC is a simple and lightweight Remote Procedure Call protocol which provides the basis for <a href="http://arachni.segfault.gr">Arachni</a>'s Grid infrastructure.
-
-This repository holds *only* the protocol specification although there currently are 2 (more like 1.5) available implementations:
-
- - <a href="http://github.com/Arachni/arachni-rpc-em">Arachni-RPC EM</a> -- Uses EventMachine for network related operations and provides both a client and a server, this is the one used by Arachni.
- - <a href="http://github.com/Arachni/arachni-rpc-pure">Arachni-RPC Pure</a> -- Provides a synchronous client using pure Ruby OpenSSL sockets and has no 3rd party dependencies.
+Arachni-RPC is a simple and lightweight Remote Procedure Call protocol which
+provides the basis for <a href="http://arachni-scanner.com">Arachni</a>'s
+distributed infrastructure.
 
 ## Features
 
- - Extremely lightweight
- - Very simple design
- - Token-based authentication
+ - Extremely lightweight.
+ - Very simple design.
+ - TLS encryption.
+ - Token-based authentication.
 
 ## Installation
 
-I can't think of a lot of uses for manually installing the protocol specification
-(it'll most likely be installed as a dependency for some other project) but in case you want to some instructions follow.
-
-### Gem
-
-```gem install arachni-rpc```
-
-### Source
-
-If you want to clone the repository and work with the source code:
-
-    git co git://github.com/arachni/arachni-rpc.git
-    cd arachni-rpc
-    rake install
-
+    gem install arachni-rpc
 
 ## Running the Specs
 
-In order to run the specs you must first install RSpec:
-    gem install rspec
-
 Then:
 
+    bundle install
     rake spec
 
 ## Protocol specifications
@@ -77,11 +60,13 @@ Then:
 You can find that information in the [Wiki](https://github.com/Arachni/arachni-rpc/wiki).
 
 ## Bug reports/Feature requests
+
 Please send your feedback using Github's issue system at
 [http://github.com/arachni/arachni-rpc/issues](http://github.com/arachni/arachni-rpc/issues).
 
 
 ## License
-Arachni-RPC is provided under the 3-clause BSD license.<br/>
+
+Arachni-RPC is provided under the 3-clause BSD license.
 See the [LICENSE](file.LICENSE.html) file for more information.
 
