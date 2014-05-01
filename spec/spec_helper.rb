@@ -36,7 +36,8 @@ def start_client( opts )
 end
 
 def quiet_spawn( file )
-    Process.spawn 'ruby', file, out: '/dev/null'
+    path = File.join( File.expand_path( File.dirname( __FILE__ ) ), 'servers', "#{file}.rb" )
+    Process.spawn 'ruby', path#, out: '/dev/null'
 end
 
 server_pids = []
@@ -45,11 +46,11 @@ RSpec.configure do |config|
     config.add_formatter :documentation
 
     config.before( :suite ) do
-        cwd = File.expand_path( File.dirname( __FILE__ ) )
-        server_pids << quiet_spawn( File.join( cwd, 'servers', 'basic.rb' ) )
-        server_pids << quiet_spawn( File.join( cwd, 'servers', 'with_ssl_primitives.rb' ) )
-        server_pids << quiet_spawn( File.join( cwd, 'servers', 'unix_socket.rb' ) )
-        server_pids.each { |pid| Process.detach( pid ) }
+        File.delete( '/tmp/arachni-rpc-test' ) rescue nil
+
+        %w(basic unix_socket with_ssl_primitives).each do |name|
+            server_pids << quiet_spawn( name ).tap { |pid| Process.detach( pid ) }
+        end
         sleep 2
     end
 
