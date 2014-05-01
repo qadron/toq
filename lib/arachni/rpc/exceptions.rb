@@ -18,7 +18,7 @@
 # By default they'll return false, individual RPC Exceptions will overwrite them
 # to return true when applicable.
 #
-# @author: Tasos "Zapotek" Laskos <tasos.laskos@gmail.com>
+# @author Tasos "Zapotek" Laskos <tasos.laskos@gmail.com>
 class Object
 
     # @return   [Bool]  false

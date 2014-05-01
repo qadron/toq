@@ -41,7 +41,7 @@ module RPC
 #    server = Arachni::RPC::EM::Server.new( host: 'localhost', port: 7331 )
 #    server.add_handler( 'bench', Bench.new )
 #
-# @author: Tasos "Zapotek" Laskos <tasos.laskos@gmail.com>
+# @author Tasos "Zapotek" Laskos <tasos.laskos@gmail.com>
 #
 class RemoteObjectMapper
 
