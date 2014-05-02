@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
 
       s.files             = %w(README.md Rakefile LICENSE.md CHANGELOG.md)
       s.files            += Dir.glob('lib/**/**')
+      s.test_files        = Dir.glob('spec/**/**')
 
       s.extra_rdoc_files  = %w(README.md LICENSE.md CHANGELOG.md)
       s.rdoc_options      = ['--charset=UTF-8']
