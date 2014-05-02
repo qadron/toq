@@ -2,6 +2,10 @@ require 'spec_helper'
 
 describe Arachni::RPC::Client do
 
+    def wait
+        Arachni::Reactor.global.wait rescue Arachni::Reactor::Error::NotRunning
+    end
+
     before(:each) do
         if Arachni::Reactor.global.running?
             Arachni::Reactor.stop
@@ -33,7 +37,7 @@ describe Arachni::RPC::Client do
             end
         end
 
-        Arachni::Reactor.global.block
+        wait
 
         cnt.should > 0
         mismatches.should be_empty
@@ -78,7 +82,7 @@ describe Arachni::RPC::Client do
                             Arachni::Reactor.stop if cnt == n || mismatches.any?
                         end
                     end
-                    Arachni::Reactor.global.block
+                    wait
 
                     cnt.should > 0
                     mismatches.should be_empty
@@ -93,7 +97,7 @@ describe Arachni::RPC::Client do
                             response = res
                             Arachni::Reactor.stop
                         end
-                        Arachni::Reactor.global.block
+                        wait
 
                         response.should be_rpc_connection_error
                         response.should be_kind_of Arachni::RPC::Exceptions::ConnectionError
@@ -155,7 +159,7 @@ describe Arachni::RPC::Client do
                     response = res
                     Arachni::Reactor.stop
                 end
-                Arachni::Reactor.global.block
+                wait
 
                 response.should == @arg
             end
@@ -208,7 +212,7 @@ describe Arachni::RPC::Client do
                 response = res
                 Arachni::Reactor.stop
             end
-            Arachni::Reactor.global.block
+            wait
 
             response.should == @arg
         end
@@ -224,7 +228,7 @@ describe Arachni::RPC::Client do
                     response = res
                     Arachni::Reactor.stop
                 end
-                Arachni::Reactor.global.block
+                wait
 
                 response.should be_rpc_connection_error
                 response.should be_kind_of Arachni::RPC::Exceptions::ConnectionError
@@ -239,7 +243,7 @@ describe Arachni::RPC::Client do
                     response = res
                     Arachni::Reactor.stop
                 end
-                Arachni::Reactor.global.block
+                wait
 
                 response.should be_rpc_invalid_object_error
                 response.should be_kind_of Arachni::RPC::Exceptions::InvalidObject
@@ -254,7 +258,7 @@ describe Arachni::RPC::Client do
                     response = res
                     Arachni::Reactor.stop
                 end
-                Arachni::Reactor.global.block
+                wait
 
                 response.should be_rpc_invalid_method_error
                 response.should be_kind_of Arachni::RPC::Exceptions::InvalidMethod
@@ -268,7 +272,7 @@ describe Arachni::RPC::Client do
                     response = res
                     Arachni::Reactor.stop
                 end
-                Arachni::Reactor.global.block
+                wait
 
                 response.should be_rpc_remote_exception
                 response.should be_kind_of Arachni::RPC::Exceptions::RemoteException
