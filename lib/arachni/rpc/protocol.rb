@@ -28,7 +28,7 @@ module Protocol
     # until the whole transmission has finished.
     #
     # It will then unserialize it and pass it to {#receive_object}.
-    def on_data( data )
+    def on_read( data )
         (@buf ||= '') << data
 
         while @buf.size >= 4
