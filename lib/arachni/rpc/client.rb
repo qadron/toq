@@ -21,7 +21,7 @@ require_relative 'client/handler'
 class Client
 
     # Default amount of connections to maintain in the re-use pool.
-    DEFAULT_CONNECTION_POOL_SIZE = 10
+    DEFAULT_CONNECTION_POOL_SIZE = 5
 
     # @return   [Hash]
     #   Options hash.
