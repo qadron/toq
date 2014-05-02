@@ -228,7 +228,6 @@ class Server
 
         # Don't die before returning...
         @reactor.delay( wait_for ) do
-            File.unlink( @socket ) if @socket
             @reactor.stop
         end
         true
