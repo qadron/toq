@@ -76,7 +76,7 @@ module Protocol
     #   Object to send.
     def send_object( obj )
         data = serialize( obj )
-        send_data [data.bytesize, data].pack( 'Na*' )
+        write [data.bytesize, data].pack( 'Na*' )
     end
 
     # Returns the preferred serializer based on the `serializer` option of the
