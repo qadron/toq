@@ -1,3 +1,4 @@
+require 'ap'
 require 'timeout'
 require_relative '../lib/arachni/rpc'
 require_relative 'servers/server'
