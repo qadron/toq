@@ -85,13 +85,7 @@ module Protocol
     # @return   [.load, .dump]
     #   Serializer to be used (Defaults to `YAML`).
     def serializer
-        return @client_serializer if @client_serializer
-
-        @opts[:serializer] ? @opts[:serializer] : YAML
-    end
-
-    def fallback_serializer
-        @opts[:fallback_serializer] ? @opts[:serializer] : YAML
+        @opts[:serializer] || YAML
     end
 
     def serialize( obj )
