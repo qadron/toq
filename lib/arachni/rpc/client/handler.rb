@@ -149,10 +149,14 @@ class Handler < Reactor::Connection
 
         req = @request.dup
 
+        # The connection will be detached soon, keep a separate reference to
+        # the reactor.
+        reactor = @reactor
+
         @tries += 1
-        @reactor.delay( 0.2 ) do
+        reactor.delay( 0.2 ) do
             address = opts[:socket] ? opts[:socket] : [opts[:host], opts[:port]]
-            @reactor.connect( *[address, self.class, opts ].flatten ).send_request( req )
+            reactor.connect( *[address, self.class, opts ].flatten ).send_request( req )
         end
 
         close_without_retry
