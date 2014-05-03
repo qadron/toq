@@ -37,12 +37,22 @@ Arachni-RPC is a simple and lightweight Remote Procedure Call protocol which
 provides the basis for <a href="http://arachni-scanner.com">Arachni</a>'s
 distributed infrastructure.
 
+(Based on the [Arachni::Reactor](https://github.com/Arachni/arachni-reactor) framework.)
+
 ## Features
 
  - Extremely lightweight.
  - Very simple design.
  - TLS encryption.
+ - Configurable serializer.
+    - Can intercept RPC responses and translate them into native objects for
+        when using serializers that only support basic types, like JSON or MessagePack.
  - Token-based authentication.
+ - Pure-Ruby.
+ - Multi-platform, tested on:
+    - Linux
+    - OSX
+    - Windows
 
 ## Installation
 
@@ -50,18 +60,17 @@ distributed infrastructure.
 
 ## Running the Specs
 
-Then:
-
     bundle install
     rake spec
 
 ## Protocol specifications
 
-You can find that information in the [Wiki](https://github.com/Arachni/arachni-rpc/wiki).
+You can find the RPC protocol specification at the
+[Wiki](https://github.com/Arachni/arachni-rpc/wiki).
 
 ## Bug reports/Feature requests
 
-Please send your feedback using Github's issue system at
+Please send your feedback using GitHub's issue system at
 [http://github.com/arachni/arachni-rpc/issues](http://github.com/arachni/arachni-rpc/issues).
 
 
