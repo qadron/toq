@@ -60,7 +60,8 @@ describe Arachni::RPC::Client do
         end
 
         describe 'option' do
-            describe :socket do
+            describe :socket, if: Arachni::Reactor.supports_unix_sockets? do
+
                 it 'connects to it' do
                     client = start_client( rpc_opts_with_socket )
                     client.call( 'test.foo', 1 ).should == 1
