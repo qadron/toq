@@ -6,6 +6,7 @@
 
 =end
 
+require 'set'
 require 'logger'
 
 module Arachni
