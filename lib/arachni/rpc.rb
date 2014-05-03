@@ -8,7 +8,6 @@
 
 require 'arachni/reactor'
 
-%w(version exceptions message request response remote_object_mapper protocol
-client server).each do |f|
+%w(version exceptions message request response proxy protocol client server).each do |f|
     require_relative "rpc/#{f}"
 end

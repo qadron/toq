@@ -198,16 +198,16 @@ describe Arachni::RPC::Client do
         end
     end
 
-    describe 'Arachni::RPC::RemoteObjectMapper interface' do
+    describe 'Arachni::RPC::Proxy interface' do
         it 'should be able to properly forward synchronous calls' do
-            test = Arachni::RPC::RemoteObjectMapper.new( start_client( rpc_opts ), 'test' )
+            test = Arachni::RPC::Proxy.new( start_client( rpc_opts ), 'test' )
             test.foo( @arg ).should == @arg
         end
 
         it 'should be able to properly forward synchronous calls' do
             response = nil
 
-            test = Arachni::RPC::RemoteObjectMapper.new( start_client( rpc_opts ), 'test' )
+            test = Arachni::RPC::Proxy.new( start_client( rpc_opts ), 'test' )
             test.foo( @arg ) do |res|
                 response = res
                 Arachni::Reactor.stop
