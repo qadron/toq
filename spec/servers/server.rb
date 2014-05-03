@@ -6,7 +6,7 @@ end
 
 def rpc_opts
     {
-        host:       'localhost',
+        host:       '127.0.0.1',
         port:       7331,
         token:      'superdupersecret',
         serializer: Marshal,

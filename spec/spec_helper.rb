@@ -7,31 +7,6 @@ def cwd
     File.expand_path( File.dirname( __FILE__ ) )
 end
 
-def rpc_opts
-    {
-        host:       'localhost',
-        port:       7331,
-        token:      'superdupersecret',
-        serializer: Marshal,
-    }
-end
-
-def rpc_opts_with_ssl_primitives
-    rpc_opts.merge(
-        port:     7332,
-        ssl_ca:   cwd + '/pems/cacert.pem',
-        ssl_pkey: cwd + '/pems/client/key.pem',
-        ssl_cert: cwd + '/pems/client/cert.pem'
-    )
-end
-
-def rpc_opts_with_invalid_ssl_primitives
-    rpc_opts_with_ssl_primitives.merge(
-        ssl_pkey: cwd + '/pems/client/foo-key.pem',
-        ssl_cert: cwd + '/pems/client/foo-cert.pem'
-    )
-end
-
 def start_client( opts )
     Arachni::RPC::Client.new( opts )
 end
@@ -49,7 +24,10 @@ RSpec.configure do |config|
     config.before( :suite ) do
         File.delete( '/tmp/arachni-rpc-test' ) rescue nil
 
-        %w(basic unix_socket with_ssl_primitives).each do |name|
+        files = %w(basic with_ssl_primitives)
+        files << 'unix_socket' if Arachni::Reactor.supports_unix_sockets?
+
+        files.each do |name|
             server_pids << quiet_spawn( name ).tap { |pid| Process.detach( pid ) }
         end
         sleep 2
