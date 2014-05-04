@@ -21,7 +21,7 @@ require_relative 'client/handler'
 class Client
 
     # Default amount of connections to maintain in the re-use pool.
-    DEFAULT_CONNECTION_POOL_SIZE = 5
+    DEFAULT_CONNECTION_POOL_SIZE = 1
 
     # @return   [Hash]
     #   Options hash.
@@ -73,7 +73,7 @@ class Client
         @opts  = opts.merge( role: :client )
         @token = @opts[:token]
 
-        @host, @port = @opts[:host], @opts[:port]
+        @host, @port = @opts[:host], @opts[:port].to_i
         @socket = @opts[:socket]
 
         if !@socket && !(@host || @port)
