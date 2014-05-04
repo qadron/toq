@@ -61,6 +61,10 @@ class Test < Parent
         Arachni::Reactor.global.delay( 1 ) { block.call( arg ) }
     end
 
+    def exception
+        fail
+    end
+
     def defer( arg, &block )
         Thread.new do
             block.call( arg )
