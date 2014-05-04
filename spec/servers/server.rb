@@ -1,3 +1,4 @@
+require 'ap'
 require_relative '../../lib/arachni/rpc'
 
 def pems_path
