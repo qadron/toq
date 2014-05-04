@@ -18,7 +18,6 @@ require_relative 'server/handler'
 #
 # @author Tasos "Zapotek" Laskos <tasos.laskos@gmail.com>
 class Server
-    include ::Arachni::RPC::Exceptions
 
     # @return   [String]
     #   Authentication token.
@@ -189,13 +188,13 @@ class Server
         if !object_exist?( obj_name )
             msg = "Trying to access non-existent object '#{obj_name}'."
             @logger.error( 'Call' ){ msg + " [on behalf of #{peer_ip_addr}]" }
-            raise InvalidObject.new( msg )
+            raise Exceptions::InvalidObject.new( msg )
         end
 
         if !public_method?( obj_name, meth_name )
             msg = "Trying to access non-public method '#{meth_name}'."
             @logger.error( 'Call' ){ msg + " [on behalf of #{peer_ip_addr}]" }
-            raise InvalidMethod.new( msg )
+            raise Exceptions::InvalidMethod.new( msg )
         end
 
         # The handler needs to know if this is an async call because if it is
