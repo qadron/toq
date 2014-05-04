@@ -6,15 +6,12 @@ class Arachni::RPC::Server
 end
 
 describe Arachni::RPC::Server do
-
-    before( :all ) do
-        @opts = rpc_opts.merge( port: 7333 )
-        @server = start_server( @opts, true )
-    end
+    let(:options) { rpc_opts.merge( port: 7333 ) }
+    subject { start_server( options, true ) }
 
     describe '#initialize' do
         it 'should be able to properly setup class options' do
-            @server.opts.should == @opts
+            subject.opts.should == options
         end
 
         context 'when passed no connection information' do
@@ -59,28 +56,29 @@ describe Arachni::RPC::Server do
     end
 
     it 'retains the supplied token' do
-        @server.token.should == @opts[:token]
+        subject.token.should == options[:token]
     end
 
     it 'has a Logger' do
-        @server.logger.class.should == ::Logger
+        subject.logger.class.should == ::Logger
     end
 
     describe '#alive?' do
-        subject { @server.alive? }
-        it { should == true }
+        it 'returns true' do
+            subject.should be_alive
+        end
     end
 
     describe '#async?' do
         context 'when a method is async' do
             it 'returns true' do
-                @server.async?( 'test', 'delay' ).should be_true
+                subject.async?( 'test', 'delay' ).should be_true
             end
         end
 
         context 'when a method is sync' do
             it 'returns false' do
-                @server.async?( 'test', 'foo' ).should be_false
+                subject.async?( 'test', 'foo' ).should be_false
             end
         end
     end
@@ -88,13 +86,13 @@ describe Arachni::RPC::Server do
     describe '#async_check' do
         context 'when a method is async' do
             it 'returns true' do
-                @server.async_check( Test.new.method( :delay ) ).should be_true
+                subject.async_check( Test.new.method( :delay ) ).should be_true
             end
         end
 
         context 'when a method is sync' do
             it 'returns false' do
-                @server.async_check( Test.new.method( :foo ) ).should be_false
+                subject.async_check( Test.new.method( :foo ) ).should be_false
             end
         end
     end
@@ -102,13 +100,13 @@ describe Arachni::RPC::Server do
     describe '#object_exist?' do
         context 'when an object exists' do
             it 'returns true' do
-                @server.object_exist?( 'test' ).should be_true
+                subject.object_exist?( 'test' ).should be_true
             end
         end
 
         context 'when an object does not exist' do
             it 'returns false' do
-                @server.object_exist?( 'foo' ).should be_false
+                subject.object_exist?( 'foo' ).should be_false
             end
         end
     end
@@ -116,13 +114,13 @@ describe Arachni::RPC::Server do
     describe '#public_method?' do
         context 'when a method is public' do
             it 'returns true' do
-                @server.public_method?( 'test', 'foo' ).should be_true
+                subject.public_method?( 'test', 'foo' ).should be_true
             end
         end
 
         context 'when a method is non-existent or not public' do
             it 'returns false' do
-                @server.public_method?( 'test', 'bar' ).should be_false
+                subject.public_method?( 'test', 'bar' ).should be_false
             end
         end
     end
