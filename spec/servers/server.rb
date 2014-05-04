@@ -57,16 +57,21 @@ class Test < Parent
     private :foo
     public  :foo
 
-    # Uses EventMachine to call the block asynchronously
-    def async_foo( arg, &block )
-        Arachni::Reactor.global.schedule { block.call( arg ) if block_given? }
+    def delay( arg, &block )
+        Arachni::Reactor.global.delay( 1 ) { block.call( arg ) }
+    end
+
+    def defer( arg, &block )
+        Thread.new do
+            block.call( arg )
+        end
     end
 
 end
 
 def start_server( opts, do_not_start = false )
     server = Arachni::RPC::Server.new( opts )
-    server.add_async_check { |method| method.name.to_s.start_with?( 'async_' ) }
+    server.add_async_check { |method| method.parameters.flatten.include? :block }
     server.add_handler( 'test', Test.new )
     server.run if !do_not_start
     server

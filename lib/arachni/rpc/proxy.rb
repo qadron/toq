@@ -39,15 +39,22 @@ module RPC
 class Proxy
 
     class <<self
+
+        # @param    [Symbol]    method_name
+        #   Method whose response to translate.
+        # @param    [Block]    translator
+        #   Block to be passed the response and return a translated object.
         def translate( method_name, &translator )
             define_method method_name do |*args, &b|
-                if b
-                    return forward( method_name, *args ) do |data|
-                        b.call *([data] + args)
-                    end
+                # For blocking calls.
+                if !b
+                    return translator.call *([forward( method_name, *args )] + args)
                 end
 
-                translator.call *([forward( method_name, *args )] + args)
+                # For non-blocking calls.
+                forward( method_name, *args ) do |data|
+                    b.call translator.call( *([data] + args) )
+                end
             end
         end
     end
@@ -65,7 +72,7 @@ class Proxy
 
     private
 
-    # Used to provide the illusion of locality for remote methods
+    # Used to provide the illusion of locality for remote methods.
     def method_missing( *args, &block )
         forward( *args, &block )
     end

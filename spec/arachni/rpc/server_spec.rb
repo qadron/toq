@@ -74,7 +74,7 @@ describe Arachni::RPC::Server do
     describe '#async?' do
         context 'when a method is async' do
             it 'returns true' do
-                @server.async?( 'test', 'async_foo' ).should be_true
+                @server.async?( 'test', 'delay' ).should be_true
             end
         end
 
@@ -88,7 +88,7 @@ describe Arachni::RPC::Server do
     describe '#async_check' do
         context 'when a method is async' do
             it 'returns true' do
-                @server.async_check( Test.new.method( :async_foo ) ).should be_true
+                @server.async_check( Test.new.method( :delay ) ).should be_true
             end
         end
 

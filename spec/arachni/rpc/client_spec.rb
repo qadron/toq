@@ -148,7 +148,15 @@ describe Arachni::RPC::Client do
         end
     end
 
-    describe 'raw interface' do
+    describe '#call' do
+        it 'can handle remote method that delay their results' do
+            start_client( rpc_opts ).call( 'test.delay', @arg ).should == @arg
+        end
+
+        it 'can handle remote method that defer their results' do
+            start_client( rpc_opts ).call( 'test.defer', @arg ).should == @arg
+        end
+
         context 'when using Threads' do
             it 'should be able to perform synchronous calls' do
                 @arg.should == start_client( rpc_opts ).call( 'test.foo', @arg )
@@ -181,7 +189,7 @@ describe Arachni::RPC::Client do
                 response.should == @arg
             end
 
-            it 'should be able to perform synchronous calls' do
+            it 'should not be able to perform synchronous calls' do
                 exception = nil
 
                 Arachni::Reactor.stop
@@ -197,175 +205,155 @@ describe Arachni::RPC::Client do
                 exception.should be_kind_of RuntimeError
             end
         end
-    end
 
-    describe 'Arachni::RPC::Proxy interface' do
-        it 'should be able to properly forward synchronous calls' do
-            test = Arachni::RPC::Proxy.new( start_client( rpc_opts ), 'test' )
-            test.foo( @arg ).should == @arg
-        end
+        context 'when performing an asynchronous call' do
+            context 'and connecting to a non-existent server' do
+                it 'returns Arachni::RPC::Exceptions::ConnectionError' do
+                    response = nil
 
-        it 'should be able to properly forward synchronous calls' do
-            response = nil
+                    options = rpc_opts.merge( host: 'dddd', port: 999339 )
+                    start_client( options ).call( 'test.foo', @arg ) do |res|
+                        response = res
+                        Arachni::Reactor.stop
+                    end
+                    wait
 
-            test = Arachni::RPC::Proxy.new( start_client( rpc_opts ), 'test' )
-            test.foo( @arg ) do |res|
-                response = res
-                Arachni::Reactor.stop
+                    response.should be_rpc_connection_error
+                    response.should be_kind_of Arachni::RPC::Exceptions::ConnectionError
+                end
             end
-            wait
 
-            response.should == @arg
+            context 'and requesting a non-existent object' do
+                it 'returns Arachni::RPC::Exceptions::InvalidObject' do
+                    response = nil
+
+                    start_client( rpc_opts ).call( 'bar.foo' ) do |res|
+                        response = res
+                        Arachni::Reactor.stop
+                    end
+                    wait
+
+                    response.should be_rpc_invalid_object_error
+                    response.should be_kind_of Arachni::RPC::Exceptions::InvalidObject
+                end
+            end
+
+            context 'and requesting a non-public method' do
+                it 'returns Arachni::RPC::Exceptions::InvalidMethod' do
+                    response = nil
+
+                    start_client( rpc_opts ).call( 'test.bar' ) do |res|
+                        response = res
+                        Arachni::Reactor.stop
+                    end
+                    wait
+
+                    response.should be_rpc_invalid_method_error
+                    response.should be_kind_of Arachni::RPC::Exceptions::InvalidMethod
+                end
+            end
+
+            context 'and there is a remote exception' do
+                it 'returns Arachni::RPC::Exceptions::RemoteException' do
+                    response = nil
+                    start_client( rpc_opts ).call( 'test.foo' ) do |res|
+                        response = res
+                        Arachni::Reactor.stop
+                    end
+                    wait
+
+                    response.should be_rpc_remote_exception
+                    response.should be_kind_of Arachni::RPC::Exceptions::RemoteException
+                end
+            end
         end
-    end
 
-    context 'when performing an asynchronous call' do
-        context 'and connecting to a non-existent server' do
-            it 'returns Arachni::RPC::Exceptions::ConnectionError' do
+        context 'when performing a synchronous call' do
+            context 'and connecting to a non-existent server' do
+               it 'raises Arachni::RPC::Exceptions::ConnectionError' do
+                   begin
+                       options = rpc_opts.merge( host: 'dddd', port: 999339 )
+                       start_client( options ).call( 'test.foo', @arg )
+                   rescue => e
+                       e.rpc_connection_error?.should be_true
+                       e.should be_kind_of Arachni::RPC::Exceptions::ConnectionError
+                   end
+               end
+            end
+
+            context 'and requesting a non-existent object' do
+                it 'raises Arachni::RPC::Exceptions::InvalidObject' do
+                    begin
+                        start_client( rpc_opts ).call( 'bar2.foo' )
+                    rescue => e
+                        e.rpc_invalid_object_error?.should be_true
+                        e.should be_kind_of Arachni::RPC::Exceptions::InvalidObject
+                    end
+                end
+            end
+
+            context 'and requesting a non-public method' do
+                it 'raises Arachni::RPC::Exceptions::InvalidMethod' do
+                    begin
+                        start_client( rpc_opts ).call( 'test.bar2' )
+                    rescue => e
+                        e.rpc_invalid_method_error?.should be_true
+                        e.should be_kind_of Arachni::RPC::Exceptions::InvalidMethod
+                    end
+                end
+            end
+
+            context 'and there is a remote exception' do
+                it 'raises Arachni::RPC::Exceptions::RemoteException' do
+                    begin
+                        start_client( rpc_opts ).call( 'test.foo' )
+                    rescue => e
+                        e.rpc_remote_exception?.should be_true
+                        e.should be_kind_of Arachni::RPC::Exceptions::RemoteException
+                    end
+                end
+            end
+        end
+
+        context 'when using valid SSL configuration' do
+            it 'should be able to establish a connection' do
+                res = start_client( rpc_opts_with_ssl_primitives ).call( 'test.foo', @arg )
+                res.should == @arg
+            end
+        end
+
+        context 'when using invalid SSL configuration' do
+            it 'should not be able to establish a connection' do
                 response = nil
 
-                options = rpc_opts.merge( host: 'dddd', port: 999339 )
-                start_client( options ).call( 'test.foo', @arg ) do |res|
-                    response = res
-                    Arachni::Reactor.stop
+                Arachni::Reactor.stop
+                Arachni::Reactor.global.run do
+                    start_client( rpc_opts_with_invalid_ssl_primitives ).call( 'test.foo', @arg ) do |res|
+                        response = res
+                        Arachni::Reactor.stop
+                    end
                 end
-                wait
 
                 response.should be_rpc_connection_error
-                response.should be_kind_of Arachni::RPC::Exceptions::ConnectionError
             end
         end
 
-        context 'and requesting a non-existent object' do
-            it 'returns Arachni::RPC::Exceptions::InvalidObject' do
+        context 'when using mixed SSL configuration' do
+            it 'should not be able to establish a connection' do
                 response = nil
 
-                start_client( rpc_opts ).call( 'bar.foo' ) do |res|
-                    response = res
-                    Arachni::Reactor.stop
+                Arachni::Reactor.stop
+                Arachni::Reactor.global.run do
+                    start_client( rpc_opts_with_mixed_ssl_primitives ).
+                        call( 'test.foo', @arg ) do |res|
+                        response = res
+                        Arachni::Reactor.stop
+                    end
                 end
-                wait
 
-                response.should be_rpc_invalid_object_error
-                response.should be_kind_of Arachni::RPC::Exceptions::InvalidObject
+                response.should be_rpc_connection_error
+                response.should be_rpc_ssl_error
             end
-        end
-
-        context 'and requesting a non-public method' do
-            it 'returns Arachni::RPC::Exceptions::InvalidMethod' do
-                response = nil
-
-                start_client( rpc_opts ).call( 'test.bar' ) do |res|
-                    response = res
-                    Arachni::Reactor.stop
-                end
-                wait
-
-                response.should be_rpc_invalid_method_error
-                response.should be_kind_of Arachni::RPC::Exceptions::InvalidMethod
-            end
-        end
-
-        context 'and there is a remote exception' do
-            it 'returns Arachni::RPC::Exceptions::RemoteException' do
-                response = nil
-                start_client( rpc_opts ).call( 'test.foo' ) do |res|
-                    response = res
-                    Arachni::Reactor.stop
-                end
-                wait
-
-                response.should be_rpc_remote_exception
-                response.should be_kind_of Arachni::RPC::Exceptions::RemoteException
-            end
-        end
-    end
-
-    context 'when performing a synchronous call' do
-        context 'and connecting to a non-existent server' do
-           it 'raises Arachni::RPC::Exceptions::ConnectionError' do
-               begin
-                   options = rpc_opts.merge( host: 'dddd', port: 999339 )
-                   start_client( options ).call( 'test.foo', @arg )
-               rescue => e
-                   e.rpc_connection_error?.should be_true
-                   e.should be_kind_of Arachni::RPC::Exceptions::ConnectionError
-               end
-           end
-        end
-
-        context 'and requesting a non-existent object' do
-            it 'raises Arachni::RPC::Exceptions::InvalidObject' do
-                begin
-                    start_client( rpc_opts ).call( 'bar2.foo' )
-                rescue => e
-                    e.rpc_invalid_object_error?.should be_true
-                    e.should be_kind_of Arachni::RPC::Exceptions::InvalidObject
-                end
-            end
-        end
-
-        context 'and requesting a non-public method' do
-            it 'raises Arachni::RPC::Exceptions::InvalidMethod' do
-                begin
-                    start_client( rpc_opts ).call( 'test.bar2' )
-                rescue => e
-                    e.rpc_invalid_method_error?.should be_true
-                    e.should be_kind_of Arachni::RPC::Exceptions::InvalidMethod
-                end
-            end
-        end
-
-        context 'and there is a remote exception' do
-            it 'raises Arachni::RPC::Exceptions::RemoteException' do
-                begin
-                    start_client( rpc_opts ).call( 'test.foo' )
-                rescue => e
-                    e.rpc_remote_exception?.should be_true
-                    e.should be_kind_of Arachni::RPC::Exceptions::RemoteException
-                end
-            end
-        end
-    end
-
-    context 'when using valid SSL configuration' do
-        it 'should be able to establish a connection' do
-            res = start_client( rpc_opts_with_ssl_primitives ).call( 'test.foo', @arg )
-            res.should == @arg
-        end
-    end
-
-    context 'when using invalid SSL configuration' do
-        it 'should not be able to establish a connection' do
-            response = nil
-
-            Arachni::Reactor.stop
-            Arachni::Reactor.global.run do
-                start_client( rpc_opts_with_invalid_ssl_primitives ).call( 'test.foo', @arg ) do |res|
-                    response = res
-                    Arachni::Reactor.stop
-                end
-            end
-
-            response.should be_rpc_connection_error
-        end
-    end
-
-    context 'when using mixed SSL configuration' do
-        it 'should not be able to establish a connection' do
-            response = nil
-
-            Arachni::Reactor.stop
-            Arachni::Reactor.global.run do
-                start_client( rpc_opts_with_mixed_ssl_primitives ).
-                    call( 'test.foo', @arg ) do |res|
-                    response = res
-                    Arachni::Reactor.stop
-                end
-            end
-
-            response.should be_rpc_connection_error
-            response.should be_rpc_ssl_error
         end
     end
 
