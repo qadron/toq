@@ -13,6 +13,21 @@ module RPC
 #
 # @author Tasos "Zapotek" Laskos <tasos.laskos@gmail.com>
 module Protocol
+    include Reactor::Connection::TLS
+
+    # Initializes an SSL session once the connection has been established and
+    # sets {#status} to `:ready`.
+    #
+    # @private
+    def on_connect
+        start_tls(
+            ca:          @opts[:ssl_ca],
+            private_key: @opts[:ssl_pkey],
+            certificate: @opts[:ssl_cert]
+        )
+
+        @status = :ready
+    end
 
     # @param    [Message]    msg
     #   Message to send to the peer.

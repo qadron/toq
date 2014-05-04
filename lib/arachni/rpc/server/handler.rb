@@ -14,7 +14,6 @@ class Server
 #
 # @author Tasos "Zapotek" Laskos <tasos.laskos@gmail.com>
 class Handler < Reactor::Connection
-    include TLS
     include Protocol
 
     # @return   [Request]
@@ -29,21 +28,10 @@ class Handler < Reactor::Connection
         @request = nil
     end
 
-    # Initializes an SSL session once the connection has been established.
-    #
-    # @private
-    def on_connect
-        start_tls(
-            ca:          @opts[:ssl_ca],
-            private_key: @opts[:ssl_pkey],
-            certificate: @opts[:ssl_cert]
-        )
-    end
-
     # Handles closed connections and cleans up the SSL session.
     #
     # @private
-    def on_close( reason )
+    def on_close( _ )
         @server = nil
     end
 

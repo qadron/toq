@@ -14,7 +14,6 @@ class Client
 #
 # @author Tasos "Zapotek" Laskos <tasos.laskos@gmail.com>
 class Handler < Reactor::Connection
-    include TLS
     include Protocol
 
     # Default amount of tries for failed requests.
@@ -85,20 +84,6 @@ class Handler < Reactor::Connection
         @client.push_connection self
     end
 
-    # Initializes an SSL session once the connection has been established and
-    # sets {#status} to `:ready`.
-    #
-    # @private
-    def on_connect
-        start_tls(
-            ca:          @opts[:ssl_ca],
-            private_key: @opts[:ssl_pkey],
-            certificate: @opts[:ssl_cert]
-        )
-
-        @status = :ready
-    end
-
     # Handles closed connections, cleans up the SSL session, retries (if
     # necessary) and sets {#status} to `:closed`.
     #
@@ -120,6 +105,7 @@ class Handler < Reactor::Connection
              end
          else
              @error = reason
+             @client.connection_failed self
          end
 
         close_without_retry
