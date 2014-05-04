@@ -119,7 +119,7 @@ class Handler < Reactor::Connection
             msg + " [on behalf of #{peer_ip_address}]"
         }
 
-        fail InvalidToken.new( msg )
+        fail Exceptions::InvalidToken.new( msg )
     end
 
     # Compares the authentication token in the param with the one of the server.
