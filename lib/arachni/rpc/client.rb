@@ -86,10 +86,6 @@ class Client
             fail ArgumentError, "Invalid port: #{@port}"
         end
 
-        if @socket && !File.exist?( @socket )
-            fail ArgumentError, "Socket path not valid: #{@socket}"
-        end
-
         @pool_size = @opts[:connection_pool_size] || DEFAULT_CONNECTION_POOL_SIZE
 
         @reactor = Reactor.global
