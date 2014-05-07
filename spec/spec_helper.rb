@@ -13,7 +13,7 @@ end
 
 def quiet_spawn( file )
     path = File.join( File.expand_path( File.dirname( __FILE__ ) ), 'servers', "#{file}.rb" )
-    Process.spawn 'ruby', path#, out: '/dev/null'
+    Process.spawn RbConfig.ruby, path#, out: '/dev/null'
 end
 
 server_pids = []
@@ -30,7 +30,7 @@ RSpec.configure do |config|
         files.each do |name|
             server_pids << quiet_spawn( name ).tap { |pid| Process.detach( pid ) }
         end
-        sleep 2
+        sleep 5
     end
 
     config.after( :suite ) do
