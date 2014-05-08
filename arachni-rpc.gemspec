@@ -26,10 +26,6 @@ Gem::Specification.new do |s|
 
       s.add_dependency 'arachni-reactor', '~> 0.1.0'
 
-      s.add_development_dependency 'rake'
-      s.add_development_dependency 'rspec'
-      s.add_development_dependency 'awesome_print'
-
       s.description = <<description
         Arachni::RPC is a simple and lightweight Remote Procedure Call protocol
         used to provide the basis for Arachni's distributed infrastructure.
