@@ -74,20 +74,6 @@ module Protocol
         p response
     end
 
-    # Converts incoming hash objects to {Request} and {Response} objects
-    # (depending on the assumed role) and calls {#receive_request} or
-    # {#receive_response} accordingly.
-    #
-    # @param    [Hash]      obj
-    def receive_object( obj )
-        if @role == :server
-            receive_request( Request.new( obj ) )
-        else
-            receive_response( Response.new( obj ) )
-        end
-    end
-
-    # @param    [Object]    obj
     #   Object to send.
     def send_object( obj )
         data = serialize( obj )

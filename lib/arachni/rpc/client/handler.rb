@@ -129,6 +129,14 @@ class Handler < Reactor::Connection
 
     private
 
+    # Converts incoming hash objects to {Response} objects and calls
+    # {#receive_response}.
+    #
+    # @param    [Hash]      obj
+    def receive_object( obj )
+        receive_response( Response.new( obj ) )
+    end
+
     def retry_request
         opts = @opts.dup
         opts[:tries] += 1

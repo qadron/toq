@@ -87,6 +87,14 @@ class Handler < Reactor::Connection
 
     private
 
+    # Converts incoming hash objects to {Request} objects and calls
+    # {#receive_request}.
+    #
+    # @param    [Hash]      obj
+    def receive_object( obj )
+        receive_request( Request.new( obj ) )
+    end
+
     # @param    [Symbol]    severity
     #
     #   Severity of the logged event:
