@@ -215,22 +215,16 @@ class Client
     end
 
     def call_sync( req )
-        ret = nil
-
         # If we're in the Reactor thread use a Fiber and if we're not use a Thread.
         if @reactor.in_same_thread?
             fail 'Cannot perform synchronous calls when running in the ' +
                      "#{Arachni::Reactor} loop."
         end
 
-        t = Thread.current
-        call_async( req ) do |obj|
-            t.wakeup
-            ret = obj
-        end
+        q = Queue.new
+        call_async( req ) { |obj| q << obj }
+        ret = q.pop
 
-        raise ret if ret.is_a?( Exception )
-        sleep
         raise ret if ret.is_a?( Exception )
 
         ret
