@@ -61,19 +61,35 @@ describe Arachni::RPC::Proxy do
     end
 
     describe '.translate' do
-        it 'translates synchronous calls' do
-            translator.foo( arguments ).should == translated_arguments
+        context 'when a synchronous call' do
+            context 'does not return an exception' do
+                it 'returns the translated result' do
+                    translator.foo( arguments ).should == translated_arguments
+                end
+            end
+
+            context 'returns an exception' do
+                it 'returns the exception'
+            end
         end
 
-        it 'translates asynchronous calls' do
-            response = nil
-            translator.foo( arguments ) do |res|
-                response = res
-                Arachni::Reactor.stop
-            end
-            wait
+        context 'when an asynchronous call' do
+            context 'does not result in an exception' do
+                it 'calls the block with the translated result' do
+                    response = nil
+                    translator.foo( arguments ) do |res|
+                        response = res
+                        Arachni::Reactor.stop
+                    end
+                    wait
 
-            response.should == translated_arguments
+                    response.should == translated_arguments
+                end
+            end
+
+            context 'results in an exception' do
+                it 'calls the block with the exception'
+            end
         end
 
         it 'passes the method arguments to the translator' do

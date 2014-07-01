@@ -48,12 +48,15 @@ class Proxy
             define_method method_name do |*args, &b|
                 # For blocking calls.
                 if !b
-                    return translator.call( forward( method_name, *args ), *args )
+                    data = forward( method_name, *args )
+                    return data.rpc_exception? ?
+                        data : translator.call( data, *args )
                 end
 
                 # For non-blocking calls.
                 forward( method_name, *args ) do |data|
-                    b.call translator.call( data, *args )
+                    b.call( data.rpc_exception? ?
+                                data : translator.call( data, *args ) )
                 end
             end
         end
