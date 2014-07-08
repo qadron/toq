@@ -6,8 +6,7 @@
 
 =end
 
-require_relative '../../../arachni-reactor/lib/arachni/reactor'
-# require 'arachni/reactor'
+require 'arachni/reactor'
 
 %w(version exceptions message request response proxy protocol client server).each do |f|
     require_relative "rpc/#{f}"
