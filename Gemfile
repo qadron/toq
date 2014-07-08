@@ -12,6 +12,4 @@ group :docs do
     gem 'redcarpet'
 end
 
-gem 'arachni-reactor', path: File.dirname( __FILE__ ) + '/../arachni-reactor'
-
 gemspec
