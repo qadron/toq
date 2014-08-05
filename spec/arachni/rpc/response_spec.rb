@@ -10,6 +10,28 @@ describe Arachni::RPC::Response do
         end
     end
 
+    describe '#exception' do
+        it 'should be an accessor' do
+            subject.exception = 'test'
+            subject.exception.should == 'test'
+        end
+    end
+
+    describe '#exception?' do
+        context 'when #exception is not set' do
+            it 'returns false' do
+                subject.exception?.should be_false
+            end
+        end
+
+        context 'when #exception is set' do
+            it 'returns true' do
+                subject.exception = 'stuff'
+                subject.exception?.should be_true
+            end
+        end
+    end
+
     describe '#async?' do
         context 'by default' do
             it 'should return false' do

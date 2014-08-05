@@ -70,7 +70,7 @@ class Handler < Reactor::Connection
     #
     # @param    [Arachni::RPC::Response]    res
     def receive_response( res )
-        if exception?( res )
+        if res.exception?
             res.obj = Exceptions.from_response( res )
         end
 
@@ -158,11 +158,6 @@ class Handler < Reactor::Connection
 
     def retry?
         @tries < @max_retries
-    end
-
-    # @param    [Response]    res
-    def exception?( res )
-        res.obj.is_a?( Hash ) && res.obj['exception'] ? true : false
     end
 
 end

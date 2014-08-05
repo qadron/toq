@@ -68,10 +68,10 @@ module Exceptions
     #
     # @return   [Exception]
     def self.from_response( response )
-        obj = response.obj
-        klass = Arachni::RPC::Exceptions.const_get( obj['type'].to_sym )
-        e = klass.new( obj['exception'] )
-        e.set_backtrace( obj['backtrace'] )
+        exception = response.exception
+        klass = Arachni::RPC::Exceptions.const_get( exception['type'].to_sym )
+        e = klass.new( exception['name'] )
+        e.set_backtrace( exception['backtrace'] )
         e
     end
 

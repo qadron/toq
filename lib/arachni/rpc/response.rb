@@ -24,13 +24,13 @@ module RPC
 class Response < Message
 
     # @return   [Object]
-    #
     #   Return object of the {Request#message}.
-    #
-    #   If there was an exception it will hold a Hash like:
+    attr_accessor :obj
+
+    # @return   [Hash]
     #
     #       {
-    #           "exception" => "Trying to access non-existent object 'blah'.",
+    #           "name" => "Trying to access non-existent object 'blah'.",
     #           "backtrace" => [
     #               [0] "/home/zapotek/workspace/arachni-rpc/lib/arachni/rpc/server.rb:285:in `call'",
     #               [1] "/home/zapotek/workspace/arachni-rpc/lib/arachni/rpc/server.rb:85:in `block in receive_object'",
@@ -39,7 +39,11 @@ class Response < Message
     #       }
     #
     #   For all available exception types look at {Exceptions}.
-    attr_accessor :obj
+    attr_accessor :exception
+
+    def exception?
+        !!exception
+    end
 
     def async?
         !!@async
