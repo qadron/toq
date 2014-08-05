@@ -33,8 +33,8 @@
 
 ## Synopsis
 
-Arachni-RPC is a simple and lightweight Remote Procedure Call protocol which
-provides the basis for <a href="http://arachni-scanner.com">Arachni</a>'s
+Arachni-RPC is a simple and lightweight Remote Procedure Call protocol and implementation
+which provides the basis for <a href="http://arachni-scanner.com">Arachni</a>'s
 distributed infrastructure.
 
 (Based on the [Arachni::Reactor](https://github.com/Arachni/arachni-reactor) framework.)
