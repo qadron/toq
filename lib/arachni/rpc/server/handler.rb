@@ -71,9 +71,9 @@ class Handler < Reactor::Connection
 
             # RPC conventions for exception transmission.
             res.exception = {
-                'name'      => e.to_s,
-                'backtrace' => e.backtrace,
-                'type'      => type
+                'type'      => type,
+                'message'   => e.to_s,
+                'backtrace' => e.backtrace
             }
 
             msg = "#{e.to_s}\n#{e.backtrace.join( "\n" )}"

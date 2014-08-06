@@ -70,7 +70,7 @@ module Exceptions
     def self.from_response( response )
         exception = response.exception
         klass = Arachni::RPC::Exceptions.const_get( exception['type'].to_sym )
-        e = klass.new( exception['name'] )
+        e = klass.new( exception['message'] )
         e.set_backtrace( exception['backtrace'] )
         e
     end
