@@ -12,7 +12,7 @@ class Client
 
 # Transmits {Request} objects and calls callbacks once an {Response} is received.
 #
-# @author Tasos "Zapotek" Laskos <tasos.laskos@gmail.com>
+# @author Tasos "Zapotek" Laskos <tasos.laskos@arachni-scanner.com>
 class Handler < Reactor::Connection
     include Protocol
 

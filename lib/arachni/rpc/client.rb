@@ -17,7 +17,7 @@ require_relative 'client/handler'
 # * Asynchronous and synchronous requests.
 # * Handling remote asynchronous calls that defer their result.
 #
-# @author Tasos "Zapotek" Laskos <tasos.laskos@gmail.com>
+# @author Tasos "Zapotek" Laskos <tasos.laskos@arachni-scanner.com>
 class Client
 
     # Default amount of connections to maintain in the re-use pool.

@@ -30,7 +30,7 @@ module RPC
 # Any client that has SSL support and can serialize a Hash just like the one
 # above can communicate with the RPC server.
 #
-# @author Tasos "Zapotek" Laskos <tasos.laskos@gmail.com>
+# @author Tasos "Zapotek" Laskos <tasos.laskos@arachni-scanner.com>
 class Request < Message
 
     # @return   [String]

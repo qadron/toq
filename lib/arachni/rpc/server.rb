@@ -16,7 +16,7 @@ require_relative 'server/handler'
 
 # RPC server.
 #
-# @author Tasos "Zapotek" Laskos <tasos.laskos@gmail.com>
+# @author Tasos "Zapotek" Laskos <tasos.laskos@arachni-scanner.com>
 class Server
 
     # @return   [String]

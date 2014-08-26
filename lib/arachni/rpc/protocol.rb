@@ -11,7 +11,7 @@ module RPC
 
 # Provides helper transport methods for {Message} transmission.
 #
-# @author Tasos "Zapotek" Laskos <tasos.laskos@gmail.com>
+# @author Tasos "Zapotek" Laskos <tasos.laskos@arachni-scanner.com>
 module Protocol
     include Reactor::Connection::TLS
 

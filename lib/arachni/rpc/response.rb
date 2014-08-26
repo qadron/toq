@@ -20,7 +20,7 @@ module RPC
 #        'obj' => object
 #    }
 #
-# @author Tasos "Zapotek" Laskos <tasos.laskos@gmail.com>
+# @author Tasos "Zapotek" Laskos <tasos.laskos@arachni-scanner.com>
 class Response < Message
 
     # @return   [Object]

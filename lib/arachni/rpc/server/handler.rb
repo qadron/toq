@@ -12,7 +12,7 @@ class Server
 
 # Receives {Request} objects and transmits {Response} objects.
 #
-# @author Tasos "Zapotek" Laskos <tasos.laskos@gmail.com>
+# @author Tasos "Zapotek" Laskos <tasos.laskos@arachni-scanner.com>
 class Handler < Reactor::Connection
     include Protocol
 

@@ -11,7 +11,7 @@ module RPC
 
 # Represents an RPC message, serves as the basis for {Request} and {Response}.
 #
-# @author Tasos "Zapotek" Laskos <tasos.laskos@gmail.com>
+# @author Tasos "Zapotek" Laskos <tasos.laskos@arachni-scanner.com>
 class Message
 
     # @param    [Hash]   opts
