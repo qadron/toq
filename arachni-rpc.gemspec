@@ -24,7 +24,7 @@ Gem::Specification.new do |s|
       s.extra_rdoc_files  = %w(README.md LICENSE.md CHANGELOG.md)
       s.rdoc_options      = ['--charset=UTF-8']
 
-      s.add_dependency 'arachni-reactor', '~> 0.1.0.beta2'
+      s.add_dependency 'arachni-reactor', '0.1.0.beta4'
 
       s.description = <<description
         Arachni::RPC is a simple and lightweight Remote Procedure Call protocol
