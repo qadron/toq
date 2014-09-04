@@ -104,6 +104,8 @@ class Client
     #   `true` if a new connection had to be established, `false` if an existing
     #   one was re-used.
     def connect( &block )
+        ensure_reactor_running
+
         if @connections.empty? && @connection_count < @pool_size
             opts = @socket ? @socket : [@host, @port]
             block.call @reactor.connect( *[opts, Handler, @opts.merge( client: self )].flatten )
@@ -131,6 +133,8 @@ class Client
 
     # Close all connections.
     def close
+        ensure_reactor_running
+
         @reactor.on_tick do |task|
             @connections.pop(&:close_without_retry)
             task.done if @connections.empty?
@@ -145,6 +149,8 @@ class Client
     #
     # @param    [Handler]   connection
     def push_connection( connection )
+        ensure_reactor_running
+
         @connections << connection
     end
 
@@ -152,6 +158,8 @@ class Client
     #
     # @param    [Handler]   connection
     def connection_failed( connection )
+        ensure_reactor_running
+
         @connection_count -= 1
         connection.close_without_retry
     end
@@ -176,6 +184,8 @@ class Client
     #   Collection of arguments to be passed to the method.
     # @param    [Block]      block
     def call( msg, *args, &block )
+        ensure_reactor_running
+
         req = Request.new(
             message:  msg,
             args:     args,
@@ -228,6 +238,11 @@ class Client
         raise ret if ret.is_a?( Exception )
 
         ret
+    end
+
+    def ensure_reactor_running
+        return if @reactor.running?
+        @reactor.run_in_thread
     end
 
 end

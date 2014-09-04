@@ -1,5 +1,10 @@
 # ChangeLog
 
+## Version 0.2.1
+
+- `Arachni::RPC::Client`: Updated to ensure that the `Arachni::Reactor` is
+    running prior to RPC operations.
+
 ## Version 0.2.0
 
 - Added `Arachni::Reactor`-based RPC client/server implementation.

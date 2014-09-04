@@ -10,8 +10,6 @@ describe Arachni::RPC::Client do
         if Arachni::Reactor.global.running?
             Arachni::Reactor.stop
         end
-
-        Arachni::Reactor.global.run_in_thread
     end
 
     let(:arguments) do
