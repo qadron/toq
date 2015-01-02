@@ -14,6 +14,7 @@ class Server
 #
 # @author Tasos "Zapotek" Laskos <tasos.laskos@arachni-scanner.com>
 class Handler < Reactor::Connection
+    include Reactor::Connection::PeerInfo
     include Protocol
 
     # @return   [Request]
