@@ -1,5 +1,9 @@
 # ChangeLog
 
+## Version 0.2.1.2
+
+- `Arachni::Reactor` dependency update.
+
 ## Version 0.2.1.1
 
 - `Arachni::Reactor` dependency update.
