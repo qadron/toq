@@ -390,7 +390,6 @@ describe Arachni::RPC::Client do
                 end
 
                 response.should be_rpc_connection_error
-                response.should be_rpc_ssl_error
             end
         end
     end
