@@ -14,7 +14,7 @@ class Client
 #
 # @author Tasos "Zapotek" Laskos <tasos.laskos@arachni-scanner.com>
 class Handler < Reactor::Connection
-    include Protocol
+    include Arachni::RPC::Protocol
 
     # Default amount of tries for failed requests.
     DEFAULT_TRIES = 9
