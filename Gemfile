@@ -12,7 +12,4 @@ group :docs do
     gem 'redcarpet'
 end
 
-gem 'arachni-reactor', github: 'arachni/arachni-reactor', branch: 'experimental'
-# gem 'arachni-reactor', path: '/home/zapotek/workspace/arachni-reactor'
-
 gemspec
