@@ -77,5 +77,4 @@ Please send your feedback using GitHub's issue system at
 ## License
 
 Arachni-RPC is provided under the 3-clause BSD license.
-See the [LICENSE](file.LICENSE.html) file for more information.
-
+See the `LICENSE` file for more information.
