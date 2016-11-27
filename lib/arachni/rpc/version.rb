@@ -9,7 +9,7 @@
 module Arachni
 module RPC
 
-    VERSION = '0.2.1.3'
+    VERSION = '0.2.1.4'
 
 end
 end
