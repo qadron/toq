@@ -7,14 +7,15 @@
 =end
 
 Gem::Specification.new do |s|
-      require File.expand_path( File.dirname( __FILE__ ) ) + '/lib/arachni/rpc/version'
+      require File.expand_path( File.dirname( __FILE__ ) ) + '/lib/toq/version'
 
-      s.name              = 'arachni-rpc'
-      s.version           = Arachni::RPC::VERSION
+      s.name              = 'toq'
+      s.version           = Toq::VERSION
+      s.license           = 'BSD 3-Clause'
       s.date              = Time.now.strftime('%Y-%m-%d')
-      s.summary           = 'The RPC protocol of the Arachni Framework.'
-      s.homepage          = 'https://github.com/Arachni/arachni-rpc'
-      s.email             = 'tasos.laskos@arachni-scanner.com'
+      s.summary           = 'Simple RPC protocol.'
+      s.homepage          = 'https://github.com/qadron/toq'
+      s.email             = 'tasos.laskos@gmail.com'
       s.authors           = [ 'Tasos Laskos' ]
 
       s.files             = %w(README.md Rakefile LICENSE.md CHANGELOG.md)
@@ -24,10 +25,10 @@ Gem::Specification.new do |s|
       s.extra_rdoc_files  = %w(README.md LICENSE.md CHANGELOG.md)
       s.rdoc_options      = ['--charset=UTF-8']
 
-      s.add_dependency 'arachni-reactor', '~> 0.1.2'
+      s.add_dependency 'raktr', '~> 0.0.1'
 
       s.description = <<description
-        Arachni::RPC is a simple and lightweight Remote Procedure Call protocol
+        Toq is a simple and lightweight Remote Procedure Call protocol
         used to provide the basis for Arachni's distributed infrastructure.
 description
 end

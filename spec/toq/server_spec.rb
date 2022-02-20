@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-class Arachni::RPC::Server
+class Toq::Server
     public :async?, :async_check, :object_exist?, :public_method?
     attr_accessor :proxy
 end
 
-describe Arachni::RPC::Server do
+describe Toq::Server do
     let(:options) { rpc_opts.merge( port: 7333 ) }
     subject { start_server( options, true ) }
 

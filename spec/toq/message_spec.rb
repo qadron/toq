@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-class MyMessage < Arachni::RPC::Message
+class MyMessage < Toq::Message
     attr_accessor :foo
     attr_accessor :boo
 
@@ -9,7 +9,7 @@ class MyMessage < Arachni::RPC::Message
     end
 end
 
-describe Arachni::RPC::Message do
+describe Toq::Message do
     let(:options) { { foo: 'foo val', boo: 'boo val' }}
     subject { MyMessage.new( options ) }
 

@@ -6,8 +6,7 @@
 
 =end
 
-module Arachni
-module RPC
+module Toq
 
 # Represents an RPC message, serves as the basis for {Request} and {Response}.
 #
@@ -61,5 +60,4 @@ class Message
 
 end
 
-end
 end

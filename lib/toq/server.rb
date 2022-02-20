@@ -9,8 +9,7 @@
 require 'set'
 require 'logger'
 
-module Arachni
-module RPC
+module Toq
 
 require_relative 'server/handler'
 
@@ -97,7 +96,7 @@ class Server
 
         @port = @port.to_i
 
-        @reactor = Reactor.global
+        @reactor = Raktr.global
 
         clear_handlers
     end
@@ -152,7 +151,7 @@ class Server
         @async_methods = {}
     end
 
-    # Runs the server and blocks while `Arachni::Reactor` is running.
+    # Runs the server and blocks while `Raktr` is running.
     def run
         @reactor.run { start }
     end
@@ -274,5 +273,4 @@ class Server
 
 end
 
-end
 end

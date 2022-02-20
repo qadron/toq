@@ -58,18 +58,17 @@ class Object
 
 end
 
-module Arachni
-module RPC
+module Toq
 module Exceptions
 
     # Returns an exception based on the response object.
     #
-    # @param    [Arachni::RPC::Response]    response
+    # @param    [Toq::Response]    response
     #
     # @return   [Exception]
     def self.from_response( response )
         exception = response.exception
-        klass = Arachni::RPC::Exceptions.const_get( exception['type'].to_sym )
+        klass = Toq::Exceptions.const_get( exception['type'].to_sym )
         e = klass.new( exception['message'] )
         e.set_backtrace( exception['backtrace'] )
         e
@@ -149,6 +148,5 @@ module Exceptions
 
     end
 
-end
 end
 end

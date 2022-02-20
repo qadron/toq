@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Arachni::RPC::Exceptions do
+describe Toq::Exceptions do
 
     describe '#rpc_exception?' do
         context 'for RPC exceptions' do

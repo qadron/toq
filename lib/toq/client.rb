@@ -6,8 +6,7 @@
 
 =end
 
-module Arachni
-module RPC
+module Toq
 
 require_relative 'client/handler'
 
@@ -88,7 +87,7 @@ class Client
 
         @pool_size = @opts[:connection_pool_size] || DEFAULT_CONNECTION_POOL_SIZE
 
-        @reactor = Reactor.global
+        @reactor = Raktr.global
 
         @connections      = @reactor.create_queue
         @connection_count = 0
@@ -201,7 +200,7 @@ class Client
     def set_exception( req, e )
         msg = @socket ? " for '#{@socket}'." : " for '#{@host}:#{@port}'."
 
-        exc = (e.is_a?( Reactor::Connection::Error::SSL ) ?
+        exc = (e.is_a?( Raktr::Connection::Error::SSL ) ?
                 Exceptions::SSLPeerVerificationFailed : Exceptions::ConnectionError
                 ).new( e.to_s + msg )
 
@@ -228,7 +227,7 @@ class Client
         # If we're in the Reactor thread use a Fiber and if we're not use a Thread.
         if @reactor.in_same_thread?
             fail 'Cannot perform synchronous calls when running in the ' +
-                     "#{Arachni::Reactor} loop."
+                     "#{Raktr} loop."
         end
 
         q = Queue.new
@@ -247,5 +246,4 @@ class Client
 
 end
 
-end
 end

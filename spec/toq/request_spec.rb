@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Arachni::RPC::Request do
+describe Toq::Request do
     subject { described_class.new }
 
     describe '#message' do

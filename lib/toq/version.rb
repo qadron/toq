@@ -6,8 +6,8 @@
 
 =end
 
-require 'arachni/reactor'
+module Toq
 
-%w(version exceptions message request response proxy protocol client server).each do |f|
-    require_relative "rpc/#{f}"
+    VERSION = '0.0.1'
+
 end

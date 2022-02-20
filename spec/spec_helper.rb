@@ -1,6 +1,6 @@
 require 'ap'
 require 'timeout'
-require_relative '../lib/arachni/rpc'
+require_relative '../lib/toq'
 require_relative 'servers/server'
 
 def cwd
@@ -8,7 +8,7 @@ def cwd
 end
 
 def start_client( opts )
-    Arachni::RPC::Client.new( opts )
+    Toq::Client.new( opts )
 end
 
 def quiet_spawn( file )
@@ -25,7 +25,7 @@ RSpec.configure do |config|
         File.delete( '/tmp/arachni-rpc-test' ) rescue nil
 
         files = %w(basic with_ssl_primitives)
-        files << 'unix_socket' if Arachni::Reactor.supports_unix_sockets?
+        files << 'unix_socket' if Raktr.supports_unix_sockets?
 
         files.each do |name|
             server_pids << quiet_spawn( name ).tap { |pid| Process.detach( pid ) }

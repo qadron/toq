@@ -8,8 +8,7 @@
 
 require_relative 'message'
 
-module Arachni
-module RPC
+module Toq
 
 # Represents an RPC request.
 #
@@ -57,5 +56,4 @@ class Request < Message
 
 end
 
-end
 end

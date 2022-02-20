@@ -1,14 +1,14 @@
 require 'spec_helper'
 
-describe Arachni::RPC::Client do
+describe Toq::Client do
 
     def wait
-        Arachni::Reactor.global.wait rescue Arachni::Reactor::Error::NotRunning
+        Raktr.global.wait rescue Raktr::Error::NotRunning
     end
 
     before(:each) do
-        if Arachni::Reactor.global.running?
-            Arachni::Reactor.stop
+        if Raktr.global.running?
+            Raktr.stop
         end
     end
 
@@ -20,7 +20,7 @@ describe Arachni::RPC::Client do
             [ 4 ]
         ]
     end
-    let(:reactor) { Arachni::Reactor.global }
+    let(:reactor) { Raktr.global }
     let(:handler) { 'test' }
     let(:remote_method) { 'foo' }
     let(:options) { rpc_opts }
@@ -50,7 +50,7 @@ describe Arachni::RPC::Client do
         end
 
         describe 'option' do
-            describe :socket, if: Arachni::Reactor.supports_unix_sockets? do
+            describe :socket, if: Raktr.supports_unix_sockets? do
                 let(:options) { rpc_opts_with_socket }
 
                 it 'connects to it' do
@@ -69,7 +69,7 @@ describe Arachni::RPC::Client do
                             subject.call( "#{handler}.#{remote_method}", arg ) do |res|
                                 cnt += 1
                                 mismatches << [i, arg, res] if arg != res
-                                Arachni::Reactor.stop if cnt == n || mismatches.any?
+                                Raktr.stop if cnt == n || mismatches.any?
                             end
                         end
                         wait
@@ -82,16 +82,16 @@ describe Arachni::RPC::Client do
                 context 'and connecting to a non-existent server' do
                     let(:options) { rpc_opts_with_socket.merge( socket: '/' ) }
 
-                    it "returns #{Arachni::RPC::Exceptions::ConnectionError}" do
+                    it "returns #{Toq::Exceptions::ConnectionError}" do
                         response = nil
                         call do |res|
                             response = res
-                            Arachni::Reactor.stop
+                            Raktr.stop
                         end
                         wait
 
                         response.should be_rpc_connection_error
-                        response.should be_kind_of Arachni::RPC::Exceptions::ConnectionError
+                        response.should be_kind_of Toq::Exceptions::ConnectionError
                     end
                 end
 
@@ -167,7 +167,7 @@ describe Arachni::RPC::Client do
                     subject.call( "#{handler}.#{remote_method}", arg ) do |res|
                         cnt += 1
                         mismatches << [i, arg, res] if arg != res
-                        Arachni::Reactor.stop if cnt == n || mismatches.any?
+                        Raktr.stop if cnt == n || mismatches.any?
                     end
                 end
 
@@ -187,7 +187,7 @@ describe Arachni::RPC::Client do
                 response = nil
                 call do |res|
                     response = res
-                    Arachni::Reactor.stop
+                    Raktr.stop
                 end
                 wait
 
@@ -199,11 +199,11 @@ describe Arachni::RPC::Client do
             it 'should be able to perform asynchronous calls' do
                 response = nil
 
-                Arachni::Reactor.stop
+                Raktr.stop
                 reactor.run do
                     call do |res|
                         response = res
-                        Arachni::Reactor.stop
+                        Raktr.stop
                     end
                 end
 
@@ -213,13 +213,13 @@ describe Arachni::RPC::Client do
             it 'should not be able to perform synchronous calls' do
                 exception = nil
 
-                Arachni::Reactor.stop
+                Raktr.stop
                 reactor.run do
                     begin
                         call
                     rescue => e
                         exception = e
-                        Arachni::Reactor.stop
+                        Raktr.stop
                     end
                 end
 
@@ -231,66 +231,66 @@ describe Arachni::RPC::Client do
             context 'and connecting to a non-existent server' do
                 let(:options) { rpc_opts.merge( host: 'dddd', port: 999339 ) }
 
-                it "returns #{Arachni::RPC::Exceptions::ConnectionError}" do
+                it "returns #{Toq::Exceptions::ConnectionError}" do
                     response = nil
                     call do |res|
                         response = res
-                        Arachni::Reactor.stop
+                        Raktr.stop
                     end
                     wait
 
                     response.should be_rpc_connection_error
-                    response.should be_kind_of Arachni::RPC::Exceptions::ConnectionError
+                    response.should be_kind_of Toq::Exceptions::ConnectionError
                 end
             end
 
             context 'and requesting a non-existent object' do
                 let(:handler) { 'bar' }
 
-                it "returns #{Arachni::RPC::Exceptions::InvalidObject}" do
+                it "returns #{Toq::Exceptions::InvalidObject}" do
                     response = nil
 
                     call do |res|
                         response = res
-                        Arachni::Reactor.stop
+                        Raktr.stop
                     end
                     wait
 
                     response.should be_rpc_invalid_object_error
-                    response.should be_kind_of Arachni::RPC::Exceptions::InvalidObject
+                    response.should be_kind_of Toq::Exceptions::InvalidObject
                 end
             end
 
             context 'and requesting a non-public method' do
                 let(:remote_method) { 'bar' }
 
-                it "returns #{Arachni::RPC::Exceptions::InvalidMethod}" do
+                it "returns #{Toq::Exceptions::InvalidMethod}" do
                     response = nil
 
                     call do |res|
                         response = res
-                        Arachni::Reactor.stop
+                        Raktr.stop
                     end
                     wait
 
                     response.should be_rpc_invalid_method_error
-                    response.should be_kind_of Arachni::RPC::Exceptions::InvalidMethod
+                    response.should be_kind_of Toq::Exceptions::InvalidMethod
                 end
             end
 
             context 'and there is a remote exception' do
                 let(:remote_method) { :exception }
 
-                it "returns #{Arachni::RPC::Exceptions::RemoteException}" do
+                it "returns #{Toq::Exceptions::RemoteException}" do
                     response = nil
                     call do |res|
                         response = res
-                        Arachni::Reactor.stop
+                        Raktr.stop
                     end
                     wait
 
                     response.should be_rpc_remote_exception
-                    response.should be_kind_of Arachni::RPC::Exceptions::RemoteException
+                    response.should be_kind_of Toq::Exceptions::RemoteException
                 end
             end
         end
@@ -299,12 +299,12 @@ describe Arachni::RPC::Client do
             context 'and connecting to a non-existent server' do
                 let(:options) { rpc_opts.merge( host: 'dddd', port: 999339 ) }
 
-               it "raises #{Arachni::RPC::Exceptions::ConnectionError}" do
+               it "raises #{Toq::Exceptions::ConnectionError}" do
                    begin
                        call
                    rescue => e
                        e.rpc_connection_error?.should be_true
-                       e.should be_kind_of Arachni::RPC::Exceptions::ConnectionError
+                       e.should be_kind_of Toq::Exceptions::ConnectionError
                    end
                end
             end
@@ -312,12 +312,12 @@ describe Arachni::RPC::Client do
             context 'and requesting a non-existent object' do
                 let(:handler) { 'bar' }
 
-                it "raises #{Arachni::RPC::Exceptions::InvalidObject}" do
+                it "raises #{Toq::Exceptions::InvalidObject}" do
                     begin
                         call
                     rescue => e
                         e.rpc_invalid_object_error?.should be_true
-                        e.should be_kind_of Arachni::RPC::Exceptions::InvalidObject
+                        e.should be_kind_of Toq::Exceptions::InvalidObject
                     end
                 end
             end
@@ -325,12 +325,12 @@ describe Arachni::RPC::Client do
             context 'and requesting a non-public method' do
                 let(:remote_method) { 'bar' }
 
-                it "raises #{Arachni::RPC::Exceptions::InvalidMethod}" do
+                it "raises #{Toq::Exceptions::InvalidMethod}" do
                     begin
                         call
                     rescue => e
                         e.rpc_invalid_method_error?.should be_true
-                        e.should be_kind_of Arachni::RPC::Exceptions::InvalidMethod
+                        e.should be_kind_of Toq::Exceptions::InvalidMethod
                     end
                 end
             end
@@ -338,12 +338,12 @@ describe Arachni::RPC::Client do
             context 'and there is a remote exception' do
                 let(:remote_method) { :exception }
 
-                it "raises #{Arachni::RPC::Exceptions::RemoteException}" do
+                it "raises #{Toq::Exceptions::RemoteException}" do
                     begin
                         call
                     rescue => e
                         e.rpc_remote_exception?.should be_true
-                        e.should be_kind_of Arachni::RPC::Exceptions::RemoteException
+                        e.should be_kind_of Toq::Exceptions::RemoteException
                     end
                 end
             end
@@ -363,11 +363,11 @@ describe Arachni::RPC::Client do
             it 'should not be able to establish a connection' do
                 response = nil
 
-                Arachni::Reactor.stop
+                Raktr.stop
                 reactor.run do
                     call do |res|
                         response = res
-                        Arachni::Reactor.stop
+                        Raktr.stop
                     end
                 end
 
@@ -381,11 +381,11 @@ describe Arachni::RPC::Client do
             it 'should not be able to establish a connection' do
                 response = nil
 
-                Arachni::Reactor.stop
+                Raktr.stop
                 reactor.run do
                     call do |res|
                         response = res
-                        Arachni::Reactor.stop
+                        Raktr.stop
                     end
                 end
 

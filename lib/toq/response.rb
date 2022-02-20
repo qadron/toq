@@ -6,8 +6,7 @@
 
 =end
 
-module Arachni
-module RPC
+module Toq
 
 # Represents an RPC response.
 #
@@ -32,8 +31,8 @@ class Response < Message
     #       {
     #           "name" => "Trying to access non-existent object 'blah'.",
     #           "backtrace" => [
-    #               [0] "/home/zapotek/workspace/arachni-rpc/lib/arachni/rpc/server.rb:285:in `call'",
-    #               [1] "/home/zapotek/workspace/arachni-rpc/lib/arachni/rpc/server.rb:85:in `block in receive_object'",
+    #               [0] "/home/zapotek/workspace/arachni-rpc/lib/toq/server.rb:285:in `call'",
+    #               [1] "/home/zapotek/workspace/arachni-rpc/lib/toq/server.rb:85:in `block in receive_object'",
     #           ],
     #           "type" => "InvalidObject"
     #       }
@@ -61,5 +60,4 @@ class Response < Message
 
 end
 
-end
 end

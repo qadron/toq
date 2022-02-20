@@ -6,15 +6,14 @@
 
 =end
 
-module Arachni
-module RPC
+module Toq
 
 # Maps the methods of remote objects to local ones.
 #
 # You start like:
 #
-#     client = Arachni::RPC::Client.new( host: 'localhost', port: 7331 )
-#     bench  = Arachni::RPC::Proxy.new( client, 'bench' )
+#     client = Toq::Client.new( host: 'localhost', port: 7331 )
+#     bench  = Toq::Proxy.new( client, 'bench' )
 #
 # And it allows you to do this:
 #
@@ -32,7 +31,7 @@ module RPC
 #         end
 #     end
 #
-#     server = Arachni::RPC::Server.new( host: 'localhost', port: 7331 )
+#     server = Toq::Server.new( host: 'localhost', port: 7331 )
 #     server.add_handler( 'bench', Bench.new )
 #
 # @author Tasos "Zapotek" Laskos <tasos.laskos@arachni-scanner.com>
@@ -82,5 +81,4 @@ class Proxy
 
 end
 
-end
 end

@@ -1,5 +1,5 @@
 require 'ap'
-require_relative '../../lib/arachni/rpc'
+require_relative '../../lib/toq'
 
 def pems_path
     File.expand_path( File.dirname( __FILE__ ) + '/../' )
@@ -59,7 +59,7 @@ class Test < Parent
     public  :foo
 
     def delay( arg, &block )
-        Arachni::Reactor.global.delay( 1 ) { block.call( arg ) }
+        Raktr.global.delay( 1 ) { block.call( arg ) }
     end
 
     def exception
@@ -75,7 +75,7 @@ class Test < Parent
 end
 
 def start_server( opts, do_not_start = false )
-    server = Arachni::RPC::Server.new( opts )
+    server = Toq::Server.new( opts )
     server.add_async_check { |method| method.parameters.flatten.include? :block }
     server.add_handler( 'test', Test.new )
     server.run if !do_not_start

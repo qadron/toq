@@ -7,7 +7,7 @@
 =end
 
 require 'rubygems'
-require File.expand_path( File.dirname( __FILE__ ) ) + '/lib/arachni/rpc/version'
+require File.expand_path( File.dirname( __FILE__ ) ) + '/lib/toq/version'
 
 begin
     require 'rspec'
@@ -21,7 +21,7 @@ task default: [ :build, :spec ]
 
 desc 'Generate docs'
 task :docs do
-    outdir = "../arachni-rpc-docs"
+    outdir = "../toq"
     sh "rm -rf #{outdir}"
     sh "mkdir -p #{outdir}"
 
@@ -35,19 +35,19 @@ task :clean do
     sh 'rm *.gem || true'
 end
 
-desc 'Build the arachni-rpc gem.'
+desc 'Build the toq gem.'
 task build: [ :clean ] do
-    sh 'gem build arachni-rpc.gemspec'
+    sh 'gem build toq.gemspec'
 end
 
-desc 'Build and install the arachni gem.'
+desc 'Build and install the toq gem.'
 task install: [ :build ] do
-    sh "gem install arachni-rpc-#{Arachni::RPC::VERSION}.gem"
+    sh "gem install toq-#{Toq::VERSION}.gem"
 end
 
 desc 'Push a new version to Rubygems'
 task publish: [ :build ] do
-    sh "git tag -a v#{Arachni::RPC::VERSION} -m 'Version #{Arachni::RPC::VERSION}'"
-    sh "gem push arachni-rpc-#{Arachni::RPC::VERSION}.gem"
+    sh "git tag -a v#{Toq::VERSION} -m 'Version #{Toq::VERSION}'"
+    sh "gem push toq-#{Toq::VERSION}.gem"
 end
 task release: [ :publish ]

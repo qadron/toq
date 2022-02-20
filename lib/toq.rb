@@ -6,10 +6,8 @@
 
 =end
 
-module Arachni
-module RPC
+require 'raktr'
 
-    VERSION = '0.2.1.4'
-
-end
+%w(version exceptions message request response proxy protocol client server).each do |f|
+    require_relative "toq/#{f}"
 end

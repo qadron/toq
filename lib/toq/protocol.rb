@@ -6,14 +6,13 @@
 
 =end
 
-module Arachni
-module RPC
+module Toq
 
 # Provides helper transport methods for {Message} transmission.
 #
 # @author Tasos "Zapotek" Laskos <tasos.laskos@arachni-scanner.com>
 module Protocol
-    include Reactor::Connection::TLS
+    include Raktr::Connection::TLS
 
     # Initializes an SSL session once the connection has been established and
     # sets {#status} to `:ready`.
@@ -99,5 +98,4 @@ module Protocol
 
 end
 
-end
 end

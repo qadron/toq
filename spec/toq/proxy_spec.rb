@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-class Translator < Arachni::RPC::Proxy
+class Translator < Toq::Proxy
 
     translate :foo do |response|
         response.map(&:to_s)
@@ -12,18 +12,18 @@ class Translator < Arachni::RPC::Proxy
 
 end
 
-describe Arachni::RPC::Proxy do
+describe Toq::Proxy do
 
     def wait
-        Arachni::Reactor.global.wait rescue Arachni::Reactor::Error::NotRunning
+        Raktr.global.wait rescue Raktr::Error::NotRunning
     end
 
     before(:each) do
-        if Arachni::Reactor.global.running?
-            Arachni::Reactor.stop
+        if Raktr.global.running?
+            Raktr.stop
         end
 
-        Arachni::Reactor.global.run_in_thread
+        Raktr.global.run_in_thread
     end
 
     let(:translated_arguments) do
@@ -37,12 +37,12 @@ describe Arachni::RPC::Proxy do
             [ 4 ]
         ]
     end
-    let(:reactor) { Arachni::Reactor.global }
+    let(:reactor) { Raktr.global }
     let(:client) { start_client( rpc_opts ) }
     let(:handler) { 'test' }
     let(:translator) { Translator.new( client, handler ) }
     subject do
-        Arachni::RPC::Proxy.new( client, handler )
+        Toq::Proxy.new( client, handler )
     end
 
     it 'forwards synchronous calls' do
@@ -53,7 +53,7 @@ describe Arachni::RPC::Proxy do
         response = nil
         subject.foo( arguments ) do |res|
             response = res
-            Arachni::Reactor.stop
+            Raktr.stop
         end
         wait
 
@@ -79,7 +79,7 @@ describe Arachni::RPC::Proxy do
                     response = nil
                     translator.foo( arguments ) do |res|
                         response = res
-                        Arachni::Reactor.stop
+                        Raktr.stop
                     end
                     wait
 

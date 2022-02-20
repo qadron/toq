@@ -6,15 +6,14 @@
 
 =end
 
-module Arachni
-module RPC
+module Toq
 class Client
 
 # Transmits {Request} objects and calls callbacks once an {Response} is received.
 #
 # @author Tasos "Zapotek" Laskos <tasos.laskos@arachni-scanner.com>
-class Handler < Reactor::Connection
-    include Arachni::RPC::Protocol
+class Handler < Raktr::Connection
+    include Toq::Protocol
 
     # Default amount of tries for failed requests.
     DEFAULT_TRIES = 9
@@ -68,7 +67,7 @@ class Handler < Reactor::Connection
     # Handles responses to RPC requests, calls its callback and sets {#status}
     # to `:done`.
     #
-    # @param    [Arachni::RPC::Response]    res
+    # @param    [Toq::Response]    res
     def receive_response( res )
         if res.exception?
             res.obj = Exceptions.from_response( res )
@@ -162,6 +161,5 @@ class Handler < Reactor::Connection
 
 end
 
-end
 end
 end

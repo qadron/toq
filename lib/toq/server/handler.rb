@@ -6,16 +6,15 @@
 
 =end
 
-module Arachni
-module RPC
+module Toq
 class Server
 
 # Receives {Request} objects and transmits {Response} objects.
 #
 # @author Tasos "Zapotek" Laskos <tasos.laskos@arachni-scanner.com>
-class Handler < Reactor::Connection
-    include Reactor::Connection::PeerInfo
-    include Arachni::RPC::Protocol
+class Handler < Raktr::Connection
+    include Raktr::Connection::PeerInfo
+    include Toq::Protocol
 
     # @return   [Request]
     #   Working RPC request.
@@ -140,7 +139,6 @@ class Handler < Reactor::Connection
         token == @server.token
     end
 
-end
 end
 end
 end
