@@ -91,10 +91,6 @@ class Client
 
         @reactor = Raktr.new
 
-        @reactor.on_error do |e|
-            p e
-        end
-
         @connections      = @reactor.create_queue
         @connection_count = 0
     end
