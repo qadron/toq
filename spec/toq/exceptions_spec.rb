@@ -50,17 +50,17 @@ describe Toq::Exceptions do
         end
     end
 
-    describe '#rpc_invalid_method_error?' do
-        context 'for invalid method RPC exceptions' do
-            subject { described_class::InvalidMethod.new.rpc_invalid_method_error? }
-            it { should be_true }
-        end
-
-        context 'for other exceptions' do
-            subject { ::Exception.new.rpc_invalid_method_error? }
-            it { should be_false }
-        end
-    end
+    # describe '#rpc_invalid_method_error?' do
+    #     context 'for invalid method RPC exceptions' do
+    #         subject { described_class::InvalidMethod.new.rpc_invalid_method_error? }
+    #         it { should be_true }
+    #     end
+    #
+    #     context 'for other exceptions' do
+    #         subject { ::Exception.new.rpc_invalid_method_error? }
+    #         it { should be_false }
+    #     end
+    # end
 
     describe '#rpc_invalid_token_error?' do
         context 'for RPC exceptions' do

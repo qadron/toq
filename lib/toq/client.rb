@@ -1,7 +1,7 @@
 =begin
 
-    This file is part of the Arachni-RPC project and may be subject to
-    redistribution and commercial restrictions. Please see the Arachni-RPC EM
+    This file is part of the Toq project and may be subject to
+    redistribution and commercial restrictions. Please see the Toq EM
     web site for more information on licensing and terms of use.
 
 =end
@@ -21,6 +21,8 @@ class Client
 
     # Default amount of connections to maintain in the re-use pool.
     DEFAULT_CONNECTION_POOL_SIZE = 1
+
+    attr_reader :reactor
 
     # @return   [Hash]
     #   Options hash.
@@ -87,7 +89,7 @@ class Client
 
         @pool_size = @opts[:connection_pool_size] || DEFAULT_CONNECTION_POOL_SIZE
 
-        @reactor = Raktr.global
+        @reactor = Raktr.new
 
         @connections      = @reactor.create_queue
         @connection_count = 0
@@ -200,9 +202,13 @@ class Client
     def set_exception( req, e )
         msg = @socket ? " for '#{@socket}'." : " for '#{@host}:#{@port}'."
 
-        exc = (e.is_a?( Raktr::Connection::Error::SSL ) ?
-                Exceptions::SSLPeerVerificationFailed : Exceptions::ConnectionError
-                ).new( e.to_s + msg )
+        exc = case e
+            when Errno::ENOENT, Errno::EACCES
+                Exceptions::ConnectionError.new( e.to_s + msg )
+
+            else
+                Exception.new( e.to_s + msg )
+        end
 
         exc.set_backtrace e.backtrace
         req.callback.call exc

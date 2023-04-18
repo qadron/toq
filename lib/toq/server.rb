@@ -1,7 +1,7 @@
 =begin
 
-    This file is part of the Arachni-RPC EM project and may be subject to
-    redistribution and commercial restrictions. Please see the Arachni-RPC EM
+    This file is part of the Toq EM project and may be subject to
+    redistribution and commercial restrictions. Please see the Toq EM
     web site for more information on licensing and terms of use.
 
 =end
@@ -28,6 +28,8 @@ class Server
 
     # @return   [Logger]
     attr_reader :logger
+
+    attr_reader :reactor
 
     # Starts the RPC server.
     #
@@ -128,14 +130,7 @@ class Server
     # @param    [Object]    obj
     #   Instantiated server object to expose.
     def add_handler( name, obj )
-        @objects[name]       = obj
-        @methods[name]       = Set.new
-        @async_methods[name] = Set.new
-
-        obj.class.public_instance_methods( false ).each do |method|
-            @methods[name]       << method.to_s
-            @async_methods[name] << method.to_s if async_check( obj.method( method ) )
-        end
+        @objects[name] = obj
     end
 
     # Clears all handlers and their associated information like methods and
@@ -145,20 +140,23 @@ class Server
     # @see #add_async_check
     def clear_handlers
         @objects = {}
-        @methods = {}
-
-        @async_checks  = []
-        @async_methods = {}
+        @async_checks = []
     end
 
     # Runs the server and blocks while `Raktr` is running.
     def run
-        @reactor.run { start }
+        @reactor.run do
+            @reactor.on_error do |e|
+                @logger.error( 'System' ){ "#{e}" }
+            end
+
+            start
+        end
     end
 
     # Starts the server but does not block.
     def start
-        @logger.info( 'System' ){ 'RPC Server started.' }
+        @logger.info( 'System' ){ "[PID #{Process.pid}] RPC Server started." }
         @logger.info( 'System' ) do
             interface = @socket ? @socket : "#{@host}:#{@port}"
             "Listening on #{interface}"
@@ -188,12 +186,6 @@ class Server
             msg = "Trying to access non-existent object '#{obj_name}'."
             @logger.error( 'Call' ){ msg + " [on behalf of #{peer_ip_addr}]" }
             raise Exceptions::InvalidObject.new( msg )
-        end
-
-        if !public_method?( obj_name, meth_name )
-            msg = "Trying to access non-public method '#{meth_name}'."
-            @logger.error( 'Call' ){ msg + " [on behalf of #{peer_ip_addr}]" }
-            raise Exceptions::InvalidMethod.new( msg )
         end
 
         # The handler needs to know if this is an async call because if it is
@@ -235,7 +227,7 @@ class Server
     private
 
     def async?( objname, method )
-        @async_methods[objname].include?( method )
+        async_check( @objects[objname].method( method ) )
     end
 
     def async_check( method )
@@ -264,11 +256,7 @@ class Server
     end
 
     def object_exist?( obj_name )
-        @objects[obj_name] ? true : false
-    end
-
-    def public_method?( obj_name, method )
-        @methods[obj_name].include?( method )
+        !!@objects[obj_name]
     end
 
 end

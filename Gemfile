@@ -12,4 +12,8 @@ group :docs do
     gem 'redcarpet'
 end
 
+if File.exist? '../raktr'
+    gem 'raktr', path: '../raktr'
+end
+
 gemspec

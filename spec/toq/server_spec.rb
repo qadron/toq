@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 class Toq::Server
-    public :async?, :async_check, :object_exist?, :public_method?
+    public :async?, :async_check, :object_exist?
     attr_accessor :proxy
 end
 
@@ -111,19 +111,4 @@ describe Toq::Server do
         end
     end
 
-    describe '#public_method?' do
-        context 'when a method is public' do
-            it 'returns true' do
-                subject.public_method?( 'test', 'foo' ).should be_true
-            end
-        end
-
-        context 'when a method is non-existent or not public' do
-            it 'returns false' do
-                subject.public_method?( 'test', 'bar' ).should be_false
-            end
-        end
-    end
-
 end
-

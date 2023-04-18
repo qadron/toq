@@ -1,7 +1,7 @@
 =begin
 
-    This file is part of the Arachni-RPC EM project and may be subject to
-    redistribution and commercial restrictions. Please see the Arachni-RPC EM
+    This file is part of the Toq EM project and may be subject to
+    redistribution and commercial restrictions. Please see the Toq EM
     web site for more information on licensing and terms of use.
 
 =end
