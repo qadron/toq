@@ -3,12 +3,12 @@
 <table>
     <tr>
         <th>Version</th>
-        <td>0.0.1</td>
+        <td>0.0.3</td>
     </tr>
     <tr>
         <th>Github page</th>
         <td><a href="http://github.com/qadron/toq">http://github.com/qadron/toq</a></td>
-     <tr/>
+     </tr>
     <tr>
         <th>Code Documentation</th>
         <td><a href="http://rubydoc.info/github/qadron/toq/">http://rubydoc.info/github/qadron/toq/</a></td>

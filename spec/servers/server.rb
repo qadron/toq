@@ -19,7 +19,7 @@ def rpc_opts_with_socket
     opts.delete( :host )
     opts.delete( :port )
 
-    opts.merge( socket: '/tmp/arachni-rpc-test' )
+    opts.merge( socket: '/tmp/toq-rpc-test' )
 end
 
 def rpc_opts_with_ssl_primitives
@@ -53,12 +53,8 @@ end
 
 class Test < Parent
 
-    # In order to make inherited methods accessible you've got to explicitly
-    # make them public.
-    private :foo
-    public  :foo
-
     def delay( arg, &block )
+        Raktr.global.run_in_thread if !Raktr.global.running?
         Raktr.global.delay( 1 ) { block.call( arg ) }
     end
 

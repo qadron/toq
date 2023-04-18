@@ -21,8 +21,10 @@ RSpec.configure do |config|
     config.color = true
     config.add_formatter :documentation
 
+    # config.filter_run_including focus: true
+
     config.before( :suite ) do
-        File.delete( '/tmp/arachni-rpc-test' ) rescue nil
+        File.delete( '/tmp/toq-rpc-test' ) rescue nil
 
         files = %w(basic with_ssl_primitives)
         files << 'unix_socket' if Raktr.supports_unix_sockets?
@@ -30,7 +32,7 @@ RSpec.configure do |config|
         files.each do |name|
             server_pids << quiet_spawn( name ).tap { |pid| Process.detach( pid ) }
         end
-        sleep 5
+        sleep 1
     end
 
     config.after( :suite ) do

@@ -1,7 +1,7 @@
 require_relative 'server'
 
 opts = rpc_opts.merge(
-    socket:     '/tmp/arachni-rpc-test',
+    socket:     '/tmp/toq-rpc-test',
     serializer: Marshal
 )
 

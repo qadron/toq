@@ -22,6 +22,8 @@ class Client
     # Default amount of connections to maintain in the re-use pool.
     DEFAULT_CONNECTION_POOL_SIZE = 1
 
+    attr_reader :reactor
+
     # @return   [Hash]
     #   Options hash.
     attr_reader :opts
@@ -88,6 +90,10 @@ class Client
         @pool_size = @opts[:connection_pool_size] || DEFAULT_CONNECTION_POOL_SIZE
 
         @reactor = Raktr.global
+
+        @reactor.on_error do |e|
+            p e
+        end
 
         @connections      = @reactor.create_queue
         @connection_count = 0
@@ -200,9 +206,13 @@ class Client
     def set_exception( req, e )
         msg = @socket ? " for '#{@socket}'." : " for '#{@host}:#{@port}'."
 
-        exc = (e.is_a?( Raktr::Connection::Error::SSL ) ?
-                Exceptions::SSLPeerVerificationFailed : Exceptions::ConnectionError
-                ).new( e.to_s + msg )
+        exc = case e
+            when Errno::ENOENT, Errno::EACCES
+                Exceptions::ConnectionError.new( e.to_s + msg )
+
+            else
+                Exception.new( e.to_s + msg )
+        end
 
         exc.set_backtrace e.backtrace
         req.callback.call exc
