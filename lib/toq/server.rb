@@ -100,10 +100,6 @@ class Server
 
         @reactor = Raktr.global
 
-        @reactor.on_error do |e|
-            @logger.error( 'System' ){ "#{e}" }
-        end
-
         clear_handlers
     end
 
