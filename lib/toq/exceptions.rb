@@ -116,6 +116,15 @@ module Exceptions
 
     end
 
+    class UnsafeMethod < Base
+
+        # @return   [Bool]  true
+        def rpc_unsafe_method_error?
+            true
+        end
+
+    end
+
     # An invalid method has been called.
     #
     # Occurs when a remote method doesn't exist or isn't public.

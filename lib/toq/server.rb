@@ -188,6 +188,12 @@ class Server
             raise Exceptions::InvalidObject.new( msg )
         end
 
+        if !method_safe?( obj_name, meth_name )
+            msg = "Trying to access unsafe method '#{meth_name}'."
+            @logger.error( 'Call' ){ msg + " [on behalf of #{peer_ip_addr}]" }
+            raise Exceptions::UnsafeMethod.new( msg )
+        end
+
         # The handler needs to know if this is an async call because if it is
         # we'll have already send the response and it doesn't need to do
         # transmit anything.
@@ -257,6 +263,28 @@ class Server
 
     def object_exist?( obj_name )
         !!@objects[obj_name]
+    end
+
+    def method_safe?( obj_name, meth_name )
+        ancestors = @objects[obj_name].class.ancestors - [Object, Kernel, BasicObject]
+
+        ancestors.each do |ancestor|
+            case ancestor
+                when Class
+                    if ancestor.allocate.public_methods( false ).include? meth_name.to_sym
+                        return true
+                    end
+
+                when Module
+                    object = Object.new
+                    object.extend( ancestor )
+                    if object.public_methods( false ).include? meth_name.to_sym
+                        return true
+                    end
+            end
+        end
+
+        false
     end
 
 end

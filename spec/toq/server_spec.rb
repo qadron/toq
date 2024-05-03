@@ -8,6 +8,13 @@ end
 describe Toq::Server do
     let(:options) { rpc_opts.merge( port: 7333 ) }
     subject { start_server( options, true ) }
+    let(:server) { start_server( options ) }
+    let(:client) { start_client( options ) }
+
+    before :all do
+        Thread.new { server }
+        client
+    end
 
     describe '#initialize' do
         it 'should be able to properly setup class options' do
@@ -61,6 +68,37 @@ describe Toq::Server do
 
     it 'has a Logger' do
         subject.logger.class.should == ::Logger
+    end
+
+    context 'when a method is public' do
+        it 'can be called' do
+            expect( client.call('test.in_child') ).to be_truthy
+        end
+    end
+
+    context 'when a method is private' do
+        it 'cannot be called' do
+            expect { client.call('test.private_method') }.to raise_error Toq::Exceptions::UnsafeMethod
+        end
+    end
+
+    context 'when a method is inherited' do
+        it 'can be called' do
+            expect( client.call('test.in_parent') ).to be_truthy
+            expect( client.call('test.in_module') ).to be_truthy
+        end
+    end
+
+    context 'when a method is inherited from Kernel' do
+        it 'cannot be called' do
+            expect { client.call('test.exec', 'ls') }.to raise_error Toq::Exceptions::UnsafeMethod
+        end
+    end
+
+    context 'when a method is inherited from Object' do
+        it 'cannot be called' do
+            expect { client.call('test.included_modules') }.to raise_error Toq::Exceptions::UnsafeMethod
+        end
     end
 
     describe '#alive?' do

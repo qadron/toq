@@ -45,13 +45,29 @@ def rpc_opts_with_mixed_ssl_primitives
     )
 end
 
+module MyModule
+    def in_module
+        true
+    end
+end
+
 class Parent
+    include MyModule
+
     def foo( arg )
         arg
+    end
+
+    def in_parent
+        true
     end
 end
 
 class Test < Parent
+
+    def in_child
+        true
+    end
 
     def delay( arg, &block )
         Raktr.global.run_in_thread if !Raktr.global.running?
@@ -68,6 +84,11 @@ class Test < Parent
         end
     end
 
+    private
+
+    def private_method
+        true
+    end
 end
 
 def start_server( opts, do_not_start = false )
