@@ -6,6 +6,8 @@
 
 =end
 
+require 'yaml'
+
 module Toq
 
 # Provides helper transport methods for {Message} transmission.

@@ -98,7 +98,7 @@ class Server
 
         @port = @port.to_i
 
-        @reactor = Raktr.global
+        @reactor = Raktr.new
 
         clear_handlers
     end
