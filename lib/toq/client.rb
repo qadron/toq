@@ -97,14 +97,12 @@ class Client
 
     def to_rpc_data
         {
-            'host' => @host,
-            'port' => @port,
-            'opts' => @opts
+            'opts' => @opts.stringify_keys
         }
     end
 
     def self.from_rpc_data( data )
-        new( data['opts'].merge( host: data['host'], port: data['port'] ) )
+        new( data.symbolize_keys[:opts] )
     end
 
     # Connection factory, will re-use or create new connections as needed to

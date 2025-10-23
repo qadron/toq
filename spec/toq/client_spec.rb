@@ -140,7 +140,7 @@ describe Toq::Client do
         it "serializes the client" do
             data = subject.to_rpc_data
             data.should be_kind_of Hash
-            described_class.from_rpc_data( data ).call( 'alive?' ).should be_true
+            described_class.from_rpc_data( data ).call('test.foo', 12).should be_true
         end
     end
 

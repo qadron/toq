@@ -8,6 +8,8 @@
 
 require 'raktr'
 
+require_relative "toq/ext/hash"
+
 %w(version exceptions message request response proxy protocol client server).each do |f|
     require_relative "toq/#{f}"
 end
