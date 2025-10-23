@@ -136,6 +136,20 @@ describe Toq::Client do
         end
     end
 
+    describe '#to_rpc_data' do
+        it "serializes the client" do
+            data = subject.to_rpc_data
+            data.should be_kind_of Hash
+            described_class.from_rpc_data( data ).call( 'alive?' ).should be_true
+        end
+    end
+
+    describe '.from_rpc_data' do
+        it "deserializes the client" do
+            pending
+        end
+    end
+
     describe '#call' do
         context 'when calling a remote method that delays its results' do
             let(:remote_method) { 'delay' }

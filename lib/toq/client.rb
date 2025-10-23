@@ -95,6 +95,18 @@ class Client
         @connection_count = 0
     end
 
+    def to_rpc_data
+        {
+            'host' => @host,
+            'port' => @port,
+            'opts' => @opts
+        }
+    end
+
+    def self.from_rpc_data( data )
+        new( data['opts'].merge( host: data['host'], port: data['port'] ) )
+    end
+
     # Connection factory, will re-use or create new connections as needed to
     # accommodate the workload.
     #
