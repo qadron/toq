@@ -19,7 +19,7 @@
     </tr>
     <tr>
         <th>Copyright</th>
-        <td>2022 <a href="https://ecsypno.com">Ecsypno</a></td>
+        <td> 2025 <a href="mailto:tasos.laskos@gmail.com">Tasos Laskos</a></td>
     </tr>
     <tr>
         <th>License</th>
