@@ -99,6 +99,7 @@ class Server
         @port = @port.to_i
 
         @reactor = Raktr.new
+        @reactor.run_in_thread
 
         clear_handlers
     end
