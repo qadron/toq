@@ -25,6 +25,7 @@ Gem::Specification.new do |s|
       s.extra_rdoc_files  = %w(README.md LICENSE.md CHANGELOG.md)
       s.rdoc_options      = ['--charset=UTF-8']
 
+      s.add_dependency 'logger'
       s.add_dependency 'raktr'
 
       s.description = <<description
