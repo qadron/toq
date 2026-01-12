@@ -20,14 +20,14 @@ describe Toq::Response do
     describe '#exception?' do
         context 'when #exception is not set' do
             it 'returns false' do
-                subject.exception?.should be_false
+                subject.exception?.should be false
             end
         end
 
         context 'when #exception is set' do
             it 'returns true' do
                 subject.exception = 'stuff'
-                subject.exception?.should be_true
+                subject.exception?.should be true
             end
         end
     end
@@ -35,14 +35,14 @@ describe Toq::Response do
     describe '#async?' do
         context 'by default' do
             it 'should return false' do
-                subject.async?.should be_false
+                subject.async?.should be false
             end
         end
 
         context 'after #async!' do
             it 'should return false' do
                 subject.async!
-                subject.async?.should be_true
+                subject.async?.should be true
             end
         end
     end

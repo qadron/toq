@@ -82,6 +82,23 @@ class Server
             if !File.exist?( @opts[:ssl_cert] )
                 raise "Could not find certificate at: #{@opts[:ssl_cert]}"
             end
+
+            if @opts[:ssl_pubkey] && !File.exist?( @opts[:ssl_pubkey] )
+                raise "Could not find public key at: #{@opts[:ssl_pubkey]}"
+            end
+
+            if @opts[:ssl_ca] && !File.exist?( @opts[:ssl_ca] )
+                raise "Could not find CA at: #{@opts[:ssl_ca]}"
+            end
+
+            # Convert SSL options to TLS format for Raktr
+            @opts[:tls] = {
+                ca:          @opts[:ssl_ca],
+                private_key: @opts[:ssl_pkey],
+                certificate: @opts[:ssl_cert],
+                public_key:  @opts[:ssl_pubkey],
+                verify_peer: !!@opts[:ssl_ca]  # Enable peer verification when CA is provided
+            }.compact
         end
 
         @token = @opts[:token]
@@ -156,6 +173,8 @@ class Server
 
     # Starts the server but does not block.
     def start
+        @reactor.run_in_thread unless @reactor.running?
+
         @logger.info( 'System' ){ "[PID #{Process.pid}] RPC Server started." }
         @logger.info( 'System' ) do
             interface = @socket ? @socket : "#{@host}:#{@port}"
@@ -163,7 +182,7 @@ class Server
         end
 
         opts = @socket ? @socket : [@host, @port]
-        @reactor.listen( *[opts, Handler, self].flatten )
+        @reactor.listen( *[opts, Handler, @opts.merge( server: self )].flatten )
     end
 
     # @note If the called method is asynchronous it will be sent by this method

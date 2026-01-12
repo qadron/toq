@@ -29,7 +29,7 @@ describe Toq::Request do
             called = false
             subject.callback = proc { called = true }
             subject.callback.call
-            called.should be_true
+            called.should be true
         end
     end
 

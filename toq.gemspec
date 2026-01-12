@@ -25,7 +25,8 @@ Gem::Specification.new do |s|
       s.extra_rdoc_files  = %w(README.md LICENSE.md CHANGELOG.md)
       s.rdoc_options      = ['--charset=UTF-8']
 
-      s.add_dependency 'raktr', '~> 0.1.0'
+      s.add_dependency 'logger'
+      s.add_dependency 'raktr'
 
       s.description = <<description
         Toq is a simple and lightweight Remote Procedure Call protocol

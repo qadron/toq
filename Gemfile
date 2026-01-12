@@ -4,7 +4,7 @@ gem 'rake'
 gem 'awesome_print'
 
 group :spec do
-    gem 'rspec'#, '2.99'
+    gem 'rspec'
 end
 
 group :docs do

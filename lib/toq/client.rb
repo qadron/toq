@@ -87,6 +87,17 @@ class Client
             fail ArgumentError, "Invalid port: #{@port}"
         end
 
+        # Convert SSL options to TLS format for Raktr
+        if @opts[:ssl_pkey] && @opts[:ssl_cert]
+            @opts[:tls] = {
+                ca:          @opts[:ssl_ca],
+                private_key: @opts[:ssl_pkey],
+                certificate: @opts[:ssl_cert],
+                public_key:  @opts[:ssl_pubkey],
+                verify_peer: !!@opts[:ssl_ca]  # Enable peer verification when CA is provided
+            }.compact
+        end
+
         @pool_size = @opts[:connection_pool_size] || DEFAULT_CONNECTION_POOL_SIZE
 
         @reactor = Raktr.new
