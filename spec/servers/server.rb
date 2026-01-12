@@ -25,26 +25,32 @@ end
 def rpc_opts_with_ssl_primitives
     rpc_opts.merge(
         port:        7332,
-        ssl_ca:      pems_path + '/pems/cacert.pem',
-        ssl_pkey:    pems_path + '/pems/client/key.pem',
-        ssl_cert:    pems_path + '/pems/client/cert.pem',
-        ssl_pubkey:  pems_path + '/pems/client/pub.pem'
+        tls: {
+            ca:          pems_path + '/pems/cacert.pem',
+            private_key: pems_path + '/pems/client/key.pem',
+            cert:        pems_path + '/pems/client/cert.pem',
+            public_key:  pems_path + '/pems/client/pub.pem'
+        }
     )
 end
 
 def rpc_opts_with_invalid_ssl_primitives
-    rpc_opts_with_ssl_primitives.merge(
-        ssl_pkey:   pems_path + '/pems/client/foo-key.pem',
-        ssl_cert:   pems_path + '/pems/client/foo-cert.pem',
-        ssl_pubkey: pems_path + '/pems/client/foo-pub.pem'
+    options = rpc_opts_with_ssl_primitives.dup
+    options[:tls].merge!(
+      private_key: pems_path + '/pems/client/foo-key.pem',
+      cert:        pems_path + '/pems/client/foo-cert.pem',
+      public_key:  pems_path + '/pems/client/foo-pub.pem'
     )
+    ap options
 end
 
 def rpc_opts_with_mixed_ssl_primitives
-    rpc_opts_with_ssl_primitives.merge(
-        ssl_pkey: pems_path + '/pems/client/key.pem',
-        ssl_cert: pems_path + '/pems/client/foo-cert.pem'
+    options = rpc_opts_with_ssl_primitives.dup
+    options[:tls].merge!(
+      private_key: pems_path + '/pems/client/key.pem',
+      cert:        pems_path + '/pems/client/foo-cert.pem'
     )
+    options
 end
 
 module MyModule

@@ -87,15 +87,27 @@ class Client
             fail ArgumentError, "Invalid port: #{@port}"
         end
 
-        # Convert SSL options to TLS format for Raktr
-        if @opts[:ssl_pkey] && @opts[:ssl_cert]
-            @opts[:tls] = {
-                ca:          @opts[:ssl_ca],
-                private_key: @opts[:ssl_pkey],
-                certificate: @opts[:ssl_cert],
-                public_key:  @opts[:ssl_pubkey],
-                verify_peer: !!@opts[:ssl_ca]  # Enable peer verification when CA is provided
-            }.compact
+        if @opts[:tls]
+            if !File.exist?( @opts[:tls][:private_key] )
+                raise "Could not find private key at: #{@opts[:tls][:private_key]}"
+            end
+
+            if !File.exist?( @opts[:tls][:cert] )
+                raise "Could not find certificate at: #{@opts[:tls][:cert]}"
+            end
+
+            if @opts[:tls][:public_key] && !File.exist?( @opts[:tls][:public_key] )
+                raise "Could not find public key at: #{@opts[:tls][:public_key]}"
+            end
+
+            if @opts[:tls][:ca] && !File.exist?( @opts[:tls][:ca] )
+                raise "Could not find CA at: #{@opts[:tls][:ca]}"
+            end
+
+            # Convert SSL options to TLS format for Raktr
+            @opts[:tls].merge(
+              verify_peer: !!@opts[:tls][:ca]  # Enable peer verification when CA is provided
+            ).compact
         end
 
         @pool_size = @opts[:connection_pool_size] || DEFAULT_CONNECTION_POOL_SIZE
