@@ -41,7 +41,7 @@ def rpc_opts_with_invalid_ssl_primitives
       cert:        pems_path + '/pems/client/foo-cert.pem',
       public_key:  pems_path + '/pems/client/foo-pub.pem'
     )
-    ap options
+    options
 end
 
 def rpc_opts_with_mixed_ssl_primitives
