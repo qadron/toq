@@ -34,8 +34,9 @@ end
 
 def rpc_opts_with_invalid_ssl_primitives
     rpc_opts_with_ssl_primitives.merge(
-        ssl_pkey: pems_path + '/pems/client/foo-key.pem',
-        ssl_cert: pems_path + '/pems/client/foo-cert.pem'
+        ssl_pkey:   pems_path + '/pems/client/foo-key.pem',
+        ssl_cert:   pems_path + '/pems/client/foo-cert.pem',
+        ssl_pubkey: pems_path + '/pems/client/foo-pub.pem'
     )
 end
 
