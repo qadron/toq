@@ -118,7 +118,6 @@ class Server
         @port = @port.to_i
 
         @reactor = Raktr.new
-        @reactor.run_in_thread
 
         clear_handlers
     end
@@ -176,6 +175,8 @@ class Server
 
     # Starts the server but does not block.
     def start
+        @reactor.run_in_thread if !@reactor.running?
+
         @logger.info( 'System' ){ "[PID #{Process.pid}] RPC Server started." }
         @logger.info( 'System' ) do
             interface = @socket ? @socket : "#{@host}:#{@port}"
