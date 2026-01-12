@@ -175,7 +175,7 @@ class Server
 
     # Starts the server but does not block.
     def start
-        @reactor.run_in_thread unless @reactor.running?
+        @reactor.run_in_thread if !@reactor.running?
 
         @logger.info( 'System' ){ "[PID #{Process.pid}] RPC Server started." }
         @logger.info( 'System' ) do
@@ -184,10 +184,7 @@ class Server
         end
 
         opts = @socket ? @socket : [@host, @port]
-        handler_opts = { server: self }
-        handler_opts[:tls] = @opts[:tls] if @opts[:tls]
-        
-        @reactor.listen( *[opts, Handler, handler_opts].flatten )
+        @reactor.listen( *[opts, Handler, @opts.merge( server: self )].flatten )
     end
 
     # @note If the called method is asynchronous it will be sent by this method

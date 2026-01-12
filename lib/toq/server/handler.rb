@@ -20,20 +20,10 @@ class Handler < Raktr::Connection
     #   Working RPC request.
     attr_reader :request
 
-    # @param    [Server, Hash]    opts
-    #   RPC server instance or options hash including :server.
+    # @param    [Hash]    opts
+    #   Options including the RPC server instance.
     def initialize( opts )
-        # Support both direct server argument (legacy) and options hash (new)
-        if opts.is_a?( Server )
-            @server = opts
-        elsif opts.is_a?( Hash )
-            @server = opts[:server]
-        else
-            fail ArgumentError, 'Server instance or options hash required'
-        end
-        
-        fail ArgumentError, 'Server instance required' unless @server.is_a?( Server )
-        
+        @server  = opts[:server]
         @opts    = @server.opts.dup
         @request = nil
     end
