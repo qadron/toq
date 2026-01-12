@@ -53,7 +53,9 @@ class Client
     #        # SSL private key
     #        :ssl_pkey   => cwd + '/../spec/pems/client/key.pem',
     #        # SSL certificate
-    #        :ssl_cert   => cwd + '/../spec/pems/client/cert.pem'
+    #        :ssl_cert   => cwd + '/../spec/pems/client/cert.pem',
+    #        # SSL public key
+    #        :ssl_pubkey => cwd + '/../spec/pems/client/pub.pem'
     #    }
     #
     # @param    [Hash]  opts
@@ -70,9 +72,20 @@ class Client
     # @option   opts    [String]    :ssl_ca  SSL CA certificate.
     # @option   opts    [String]    :ssl_pkey  SSL private key.
     # @option   opts    [String]    :ssl_cert  SSL certificate.
+    # @option   opts    [String]    :ssl_pubkey  SSL public key.
     def initialize( opts )
         @opts  = opts.merge( role: :client )
         @token = @opts[:token]
+
+        # Convert old ssl_* options to new TLS format for Raktr
+        if @opts[:ssl_ca] || @opts[:ssl_pkey] || @opts[:ssl_cert] || @opts[:ssl_pubkey]
+            @opts[:tls] = {
+                ca:          @opts[:ssl_ca],
+                private_key: @opts[:ssl_pkey],
+                certificate: @opts[:ssl_cert],
+                public_key:  @opts[:ssl_pubkey]
+            }.compact
+        end
 
         @host, @port = @opts[:host], @opts[:port].to_i
         @socket = @opts[:socket]
