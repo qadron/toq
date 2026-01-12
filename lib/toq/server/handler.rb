@@ -20,11 +20,11 @@ class Handler < Raktr::Connection
     #   Working RPC request.
     attr_reader :request
 
-    # @param    [Server]    server
-    #   RPC server.
-    def initialize( server )
-        @server  = server
-        @opts    = server.opts.dup
+    # @param    [Hash]    opts
+    #   Options including the RPC server.
+    def initialize( opts )
+        @server  = opts[:server]
+        @opts    = @server.opts.dup
         @request = nil
     end
 
