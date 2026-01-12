@@ -184,7 +184,8 @@ class Server
         end
 
         opts = @socket ? @socket : [@host, @port]
-        handler_opts = @opts[:tls] ? { server: self, tls: @opts[:tls] } : { server: self }
+        handler_opts = { server: self }
+        handler_opts[:tls] = @opts[:tls] if @opts[:tls]
         
         @reactor.listen( *[opts, Handler, handler_opts].flatten )
     end
