@@ -21,7 +21,7 @@ module Protocol
     #
     # @private
     def on_connect
-        start_tls
+        start_tls if @tls
 
         @status = :ready
     end
