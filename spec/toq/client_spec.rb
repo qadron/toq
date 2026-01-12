@@ -96,7 +96,7 @@ describe Toq::Client do
                 context 'when passed an invalid socket path' do
                     it 'raises ArgumentError' do
                         begin
-                            described_class.new( socket: 'blah' )
+                            Toq::Client.new( socket: 'blah' )
                         rescue => e
                             e.should be_kind_of ArgumentError
                         end
@@ -140,7 +140,7 @@ describe Toq::Client do
         it "serializes the client" do
             data = subject.to_rpc_data
             data.should be_kind_of Hash
-            described_class.from_rpc_data( data ).call('test.foo', 12).should be_true
+            described_class.from_rpc_data( data ).call('test.foo', 12).should be_truthy
         end
     end
 
@@ -313,7 +313,7 @@ describe Toq::Client do
                    begin
                        call
                    rescue => e
-                       e.rpc_connection_error?.should be_true
+                       e.rpc_connection_error?.should be true
                        e.should be_kind_of Toq::Exceptions::ConnectionError
                    end
                end
@@ -326,7 +326,7 @@ describe Toq::Client do
                     begin
                         call
                     rescue => e
-                        e.rpc_invalid_object_error?.should be_true
+                        e.rpc_invalid_object_error?.should be true
                         e.should be_kind_of Toq::Exceptions::InvalidObject
                     end
                 end
@@ -352,7 +352,7 @@ describe Toq::Client do
                     begin
                         call
                     rescue => e
-                        e.rpc_remote_exception?.should be_true
+                        e.rpc_remote_exception?.should be true
                         e.should be_kind_of Toq::Exceptions::RemoteException
                     end
                 end
