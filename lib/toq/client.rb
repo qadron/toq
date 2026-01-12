@@ -93,7 +93,8 @@ class Client
                 ca:          @opts[:ssl_ca],
                 private_key: @opts[:ssl_pkey],
                 certificate: @opts[:ssl_cert],
-                public_key:  @opts[:ssl_pubkey]
+                public_key:  @opts[:ssl_pubkey],
+                verify_peer: !!@opts[:ssl_ca]  # Enable peer verification when CA is provided
             }.compact
         end
 
