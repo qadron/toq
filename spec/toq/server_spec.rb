@@ -13,7 +13,6 @@ describe Toq::Server do
 
     before :all do
         Thread.new { server }
-        client
     end
 
     describe '#initialize' do
@@ -110,13 +109,13 @@ describe Toq::Server do
     describe '#async?' do
         context 'when a method is async' do
             it 'returns true' do
-                subject.async?( 'test', 'delay' ).should be_true
+                subject.async?( 'test', 'delay' ).should be true
             end
         end
 
         context 'when a method is sync' do
             it 'returns false' do
-                subject.async?( 'test', 'foo' ).should be_false
+                subject.async?( 'test', 'foo' ).should be false
             end
         end
     end
@@ -124,13 +123,13 @@ describe Toq::Server do
     describe '#async_check' do
         context 'when a method is async' do
             it 'returns true' do
-                subject.async_check( Test.new.method( :delay ) ).should be_true
+                subject.async_check( Test.new.method( :delay ) ).should be true
             end
         end
 
         context 'when a method is sync' do
             it 'returns false' do
-                subject.async_check( Test.new.method( :foo ) ).should be_false
+                subject.async_check( Test.new.method( :foo ) ).should be false
             end
         end
     end
@@ -138,13 +137,13 @@ describe Toq::Server do
     describe '#object_exist?' do
         context 'when an object exists' do
             it 'returns true' do
-                subject.object_exist?( 'test' ).should be_true
+                subject.object_exist?( 'test' ).should be true
             end
         end
 
         context 'when an object does not exist' do
             it 'returns false' do
-                subject.object_exist?( 'foo' ).should be_false
+                subject.object_exist?( 'foo' ).should be false
             end
         end
     end
