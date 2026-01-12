@@ -86,8 +86,10 @@ class Server
                 raise "Could not find certificate at: #{@opts[:ssl_cert]}"
             end
 
-            if @opts[:ssl_pubkey] && !File.exist?( @opts[:ssl_pubkey] )
-                raise "Could not find public key at: #{@opts[:ssl_pubkey]}"
+            if @opts[:ssl_pubkey]
+                if !File.exist?( @opts[:ssl_pubkey] )
+                    raise "Could not find public key at: #{@opts[:ssl_pubkey]}"
+                end
             end
         end
 
