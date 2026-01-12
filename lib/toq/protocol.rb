@@ -21,12 +21,7 @@ module Protocol
     #
     # @private
     def on_connect
-        start_tls(
-            ca:          @opts[:ssl_ca],
-            private_key: @opts[:ssl_pkey],
-            certificate: @opts[:ssl_cert],
-            public_key:  @opts[:ssl_pubkey]
-        )
+        start_tls
 
         @status = :ready
     end
