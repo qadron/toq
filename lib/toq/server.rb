@@ -184,7 +184,10 @@ class Server
         end
 
         opts = @socket ? @socket : [@host, @port]
-        @reactor.listen( *[opts, Handler, @opts.merge( server: self )].flatten )
+        handler_opts = { server: self }
+        handler_opts[:tls] = @opts[:tls] if @opts[:tls]
+        
+        @reactor.listen( *[opts, Handler, handler_opts].flatten )
     end
 
     # @note If the called method is asynchronous it will be sent by this method
