@@ -175,7 +175,7 @@ class Server
 
     # Starts the server but does not block.
     def start
-        @reactor.run_in_thread if !@reactor.running?
+        @reactor.run_in_thread unless @reactor.running?
 
         @logger.info( 'System' ){ "[PID #{Process.pid}] RPC Server started." }
         @logger.info( 'System' ) do
