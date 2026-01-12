@@ -6,7 +6,7 @@ opts = rpc_opts.merge(
     tls: {
         ca:          cwd + '/../pems/cacert.pem',
         private_key: cwd + '/../pems/server/key.pem',
-        cert:        cwd + '/../pems/server/cert.pem',
+        certificate: cwd + '/../pems/server/cert.pem',
         public_key:  cwd + '/../pems/server/pub.pem'
     }
 )

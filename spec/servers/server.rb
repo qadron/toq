@@ -28,7 +28,7 @@ def rpc_opts_with_ssl_primitives
         tls: {
             ca:          pems_path + '/pems/cacert.pem',
             private_key: pems_path + '/pems/client/key.pem',
-            cert:        pems_path + '/pems/client/cert.pem',
+            certificate: pems_path + '/pems/client/cert.pem',
             public_key:  pems_path + '/pems/client/pub.pem'
         }
     )
@@ -38,7 +38,7 @@ def rpc_opts_with_invalid_ssl_primitives
     options = rpc_opts_with_ssl_primitives.dup
     options[:tls].merge!(
       private_key: pems_path + '/pems/client/foo-key.pem',
-      cert:        pems_path + '/pems/client/foo-cert.pem',
+      certificate: pems_path + '/pems/client/foo-cert.pem',
       public_key:  pems_path + '/pems/client/foo-pub.pem'
     )
     options
@@ -48,7 +48,7 @@ def rpc_opts_with_mixed_ssl_primitives
     options = rpc_opts_with_ssl_primitives.dup
     options[:tls].merge!(
       private_key: pems_path + '/pems/client/key.pem',
-      cert:        pems_path + '/pems/client/foo-cert.pem'
+      certificate: pems_path + '/pems/client/foo-cert.pem'
     )
     options
 end

@@ -75,12 +75,12 @@ class Server
         @opts = opts
 
         if @opts[:tls]
-            if !File.exist?( @opts[:tls][:private_key] )
+            if @opts[:tls][:private_key] && !File.exist?( @opts[:tls][:private_key] )
                 raise "Could not find private key at: #{@opts[:tls][:private_key]}"
             end
 
-            if !File.exist?( @opts[:tls][:cert] )
-                raise "Could not find certificate at: #{@opts[:tls][:cert]}"
+            if @opts[:tls][:certificate] && !File.exist?( @opts[:tls][:certificate] )
+                raise "Could not find certificate at: #{@opts[:tls][:certificate]}"
             end
 
             if @opts[:tls][:public_key] && !File.exist?( @opts[:tls][:public_key] )
@@ -91,10 +91,7 @@ class Server
                 raise "Could not find CA at: #{@opts[:tls][:ca]}"
             end
 
-            # Convert SSL options to TLS format for Raktr
-            # Raktr expects :certificate instead of :cert
             @opts[:tls] = @opts[:tls].merge(
-                certificate: @opts[:tls][:cert],
                 verify_peer: !!@opts[:tls][:ca]  # Enable peer verification when CA is provided
             ).compact
         end
