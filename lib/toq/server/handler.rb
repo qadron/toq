@@ -23,7 +23,7 @@ class Handler < Raktr::Connection
     # @param    [Hash]    opts
     #   Options including the RPC server instance.
     def initialize( opts )
-        @server  = opts[:server]
+        @server  = opts[:server] or fail ArgumentError, ':server required in options'
         @opts    = @server.opts.dup
         @request = nil
     end
