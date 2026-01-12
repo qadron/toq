@@ -105,7 +105,9 @@ class Client
             end
 
             # Convert SSL options to TLS format for Raktr
-            @opts[:tls].merge(
+            # Raktr expects :certificate instead of :cert
+            @opts[:tls] = @opts[:tls].merge(
+              certificate: @opts[:tls][:cert],
               verify_peer: !!@opts[:tls][:ca]  # Enable peer verification when CA is provided
             ).compact
         end
